@@ -2,6 +2,7 @@ import { useLocation, useNavigate } from "react-router";
 import { IoClose } from "react-icons/io5";
 import { useCallback, useEffect, useState } from "react";
 import { generateSummary } from "../../API/AIAPI";
+import ReactMarkdown from "react-markdown";
 
 interface ModalIASummaryProps {
     content: string;
@@ -64,13 +65,13 @@ export default function ModalIASummary({ content }: ModalIASummaryProps) {
                 </div>
 
                 {isGenerating && (
-                    <div>
+                    <div className="space-y-2">
                         {loading ? (
                             <p>Cargando...</p>
                         ) : (
                             <h3 className="text-xl text-gray-500">Resumen generado por IA</h3>
                         )}
-                        <p className="my-4">{summary}</p>
+                        <ReactMarkdown>{summary}</ReactMarkdown>
                     </div>
                 )}
 
