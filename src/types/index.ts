@@ -13,3 +13,9 @@ export interface SuggestTagsParams {
 export interface SuggestCategoriesParams {
     tagNames: string[];
 }
+
+export interface Category {
+    name: string;
+    description: string;
+    tags: string[];
+}
