@@ -7,9 +7,6 @@ export default function AppLayout() {
         <div className="flex flex-col h-screen bg-gray-50">
             <header className="bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between shrink-0 z-10">
                 <Breadcrumbs />
-                <div className="flex items-center gap-4">
-                    {/* Acciones globales futuras */}
-                </div>
             </header>
 
             <div className="flex flex-1 overflow-hidden">
