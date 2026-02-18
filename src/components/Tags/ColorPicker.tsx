@@ -1,3 +1,5 @@
+import { CiCircleCheck } from "react-icons/ci";
+
 const PRESET_COLORS = [
     { name: 'Rojo', hex: '#EF4444' },
     { name: 'Naranja', hex: '#F59E0B' },
@@ -21,57 +23,40 @@ export const ColorPicker = ({
     onChange
 }: ColorPickerProps) => {
     return (
-        <div className="color-picker">
-            <label className="text-sm font-medium text-gray-700 mb-2 block">
-                Color del tag
+        <div className="color-picker space-y-4">
+            <label className='text-sm text-gray-500'>
+                Color
             </label>
-            <div className="grid grid-cols-5 gap-2">
+            <div className="grid grid-cols-5 gap-2 mt-2">
                 {PRESET_COLORS.map((color) => (
                     <button
                         key={color.hex}
                         type="button"
                         onClick={() => onChange(color.hex)}
                         className={`
-              w-12 h-12 rounded-lg border-2 transition-all
-              hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-2
-              ${selectedColor === color.hex
-                                ? 'border-gray-900 ring-2 ring-gray-900'
-                                : 'border-gray-300'
-                            }
-            `}
+              size-10 rounded-full transition-all duration-300 cursor-pointer
+              hover:scale-90 focus:outline-none
+              ${selectedColor === color.hex && 'flex items-center justify-center border border-gray-300'}`}
                         style={{ backgroundColor: color.hex }}
                         title={color.name}
                         aria-label={`Seleccionar color ${color.name}`}
                     >
                         {selectedColor === color.hex && (
-                            <svg
-                                className="w-6 h-6 mx-auto text-white drop-shadow-lg"
-                                fill="currentColor"
-                                viewBox="0 0 20 20"
-                            >
-                                <path
-                                    fillRule="evenodd"
-                                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                    clipRule="evenodd"
-                                />
-                            </svg>
+                            <CiCircleCheck className="size-6 text-white" />
                         )}
                     </button>
                 ))}
             </div>
 
-            {/* Input manual para colores custom (opcional) */}
-            <div className="mt-3">
-                <input
-                    type="text"
-                    value={selectedColor}
-                    onChange={(e) => onChange(e.target.value)}
-                    placeholder="#3B82F6"
-                    maxLength={7}
-                    pattern="^#[0-9A-Fa-f]{6}$"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
-                />
-            </div>
+            <input
+                type="text"
+                value={selectedColor}
+                onChange={(e) => onChange(e.target.value)}
+                placeholder="#3B82F6"
+                maxLength={7}
+                pattern="^#[0-9A-Fa-f]{6}$"
+                className="p-2 border border-gray-300 rounded-md bg-gray-100 text-sm w-full"
+            />
         </div>
     );
 };

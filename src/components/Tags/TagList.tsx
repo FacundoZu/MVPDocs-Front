@@ -34,7 +34,7 @@ export const TagList: React.FC<TagListProps> = ({
                             style={{ backgroundColor: tag.color }}
                             title={`Color: ${tag.color}`}
                         />
-                        <p className="text-gray-700 font-semibold">{tag.name}</p>
+                        <p className="text-gray-700 font-semibold line-clamp-1" title={tag.name}>{tag.name}</p>
                     </div>
                     <div className="flex items-center gap-2">
                         <span className="px-2 py-1 rounded-2xl bg-gray-100 text-gray-500 text-xs font-bold">{tag.usageCount}</span>
