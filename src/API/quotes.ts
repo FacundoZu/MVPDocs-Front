@@ -32,8 +32,9 @@ export interface CreateQuoteRequest {
 }
 
 export const quoteApi = {
-    list: async (documentId: string): Promise<Quote[]> => {
-        const response = await api.get<Quote[]>('/quotes', { params: { documentId } });
+    // GET /quotes/document/:documentId
+    listByDocument: async (documentId: string): Promise<Quote[]> => {
+        const response = await api.get<Quote[]>(`/quotes/document/${documentId}`);
         return response.data;
     },
 
@@ -42,7 +43,7 @@ export const quoteApi = {
         return response.data;
     },
 
-    delete: async (id: string): Promise<void> => {
+    deleteQuote: async (id: string): Promise<void> => {
         await api.delete(`/quotes/${id}`);
     },
 };

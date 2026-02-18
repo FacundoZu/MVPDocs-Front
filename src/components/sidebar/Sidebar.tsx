@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useProject } from '../../context/ProjectContext';
 import { projectApi } from '../../API/projects';
-import type { Project } from '../../context/ProjectContext';
 import { FiFolder, FiFolderPlus, FiPlus, FiLoader } from 'react-icons/fi';
 import ProjectItem from './ProjectItem';
+import type { ProjectWithDocs } from './ProjectItem';
 import NewProjectModal from './NewProjectModal';
 
 export default function Sidebar() {
@@ -24,7 +24,6 @@ export default function Sidebar() {
     return (
         <>
             <aside className="w-64 shrink-0 h-full bg-white border-r border-gray-200 flex flex-col">
-                {/* Header */}
                 <div className="px-4 py-4 border-b border-gray-100 flex items-center justify-between">
                     <div className="flex items-center gap-2">
                         <FiFolderPlus className="w-5 h-5 text-gray-500" />
@@ -39,7 +38,6 @@ export default function Sidebar() {
                     </button>
                 </div>
 
-                {/* Lista de proyectos */}
                 <div className="flex-1 overflow-y-auto px-2 py-3 space-y-0.5">
                     {isLoading ? (
                         <div className="flex items-center justify-center py-8">
@@ -57,13 +55,12 @@ export default function Sidebar() {
                             </button>
                         </div>
                     ) : (
-                        projects.map((project: Project) => (
+                        (projects as ProjectWithDocs[]).map((project) => (
                             <ProjectItem key={project._id} project={project} />
                         ))
                     )}
                 </div>
 
-                {/* Footer */}
                 <div className="px-4 py-3 border-t border-gray-100">
                     <button
                         onClick={() => setShowModal(true)}

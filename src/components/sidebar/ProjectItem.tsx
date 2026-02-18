@@ -1,13 +1,20 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
-import { useQuery } from '@tanstack/react-query';
-import type { Project } from '../../context/ProjectContext';
-import { documentApi } from '../../API/documents';
-import { FiFolder, FiChevronDown, FiChevronRight, FiLoader } from 'react-icons/fi';
+import { FiFolder, FiChevronDown, FiChevronRight } from 'react-icons/fi';
 import DocumentItem from './DocumentItem';
 
+// Tipo extendido que incluye los documentos embebidos que devuelve GET /projects
+export interface ProjectWithDocs {
+    _id: string;
+    name: string;
+    description?: string;
+    createdAt: string;
+    updatedAt: string;
+    documents: { id: string; title: string }[];
+}
+
 interface ProjectItemProps {
-    project: Project;
+    project: ProjectWithDocs;
 }
 
 export default function ProjectItem({ project }: ProjectItemProps) {
@@ -16,12 +23,6 @@ export default function ProjectItem({ project }: ProjectItemProps) {
     const [isOpen, setIsOpen] = useState(activeProjectId === project._id);
 
     const isActive = activeProjectId === project._id;
-
-    const { data: documents = [], isLoading } = useQuery({
-        queryKey: ['documents', project._id],
-        queryFn: () => documentApi.list(project._id),
-        enabled: isOpen,
-    });
 
     const handleClick = () => {
         navigate(`/projects/${project._id}`);
@@ -43,24 +44,22 @@ export default function ProjectItem({ project }: ProjectItemProps) {
                 }
                 <FiFolder className={`w-4 h-4 shrink-0 ${isActive ? 'text-blue-600' : 'text-gray-400'}`} />
                 <span className="truncate">{project.name}</span>
+                {project.documents.length > 0 && (
+                    <span className="ml-auto text-xs text-gray-400 shrink-0">{project.documents.length}</span>
+                )}
             </button>
 
             {isOpen && (
                 <div className="ml-5 mt-0.5 space-y-0.5 border-l border-gray-100 pl-2">
-                    {isLoading ? (
-                        <div className="flex items-center gap-2 px-3 py-2">
-                            <FiLoader className="w-3 h-3 text-gray-400 animate-spin" />
-                            <span className="text-xs text-gray-400">Cargando...</span>
-                        </div>
-                    ) : documents.length === 0 ? (
+                    {project.documents.length === 0 ? (
                         <p className="text-xs text-gray-400 px-3 py-1.5 italic">Sin documentos aún</p>
                     ) : (
-                        documents.map((doc) => (
+                        project.documents.map((doc) => (
                             <DocumentItem
-                                key={doc._id}
-                                documentId={doc._id}
+                                key={doc.id}
+                                documentId={doc.id}
                                 projectId={project._id}
-                                title={doc.title || doc.originalFilename}
+                                title={doc.title}
                             />
                         ))
                     )}
