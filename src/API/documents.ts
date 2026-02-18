@@ -26,15 +26,13 @@ export interface DocumentListResponse {
     totalDocuments: number;
 }
 
-export interface UploadDocumentResponse extends Document { }
-
 export const documentApi = {
-    upload: async (file: File, projectId: string): Promise<UploadDocumentResponse> => {
+    upload: async (file: File, projectId: string): Promise<Document> => {
         const formData = new FormData();
         formData.append('file', file);
         formData.append('projectId', projectId);
 
-        const response = await api.post<UploadDocumentResponse>('/documents/upload', formData, {
+        const response = await api.post<Document>('/documents/upload', formData, {
             headers: { 'Content-Type': 'multipart/form-data' },
         });
         return response.data;
