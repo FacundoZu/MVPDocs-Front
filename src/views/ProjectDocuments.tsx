@@ -4,7 +4,6 @@ import { projectApi } from '../API/projects';
 import { documentApi } from '../API/documents';
 import DocumentUpload from '../components/document/DocumentUpload';
 import DocumentTable from '../components/document/DocumentTable';
-import TagManager from '../components/tags/TagManager';
 
 export function ProjectDocuments() {
     const { projectId } = useParams<{ projectId: string }>();
@@ -71,7 +70,6 @@ export function ProjectDocuments() {
                     />
                 </div>
 
-                <TagManager projectId={projectId} />
             </div>
         </div>
     );
