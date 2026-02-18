@@ -6,7 +6,7 @@ export default function AppLayout() {
 
     return (
         <main className="h-screen px-20">
-            <Header />
+            {/* <Header /> */}
             <section className="overflow-y-auto">
                 <Outlet />
             </section>
