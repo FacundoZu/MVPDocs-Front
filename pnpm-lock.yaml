@@ -35,6 +35,9 @@ importers:
       react-highlight-selection:
         specifier: 1.0.2
         version: 1.0.2
+      react-icons:
+        specifier: 5.5.0
+        version: 5.5.0(react@19.2.4)
       react-markdown:
         specifier: 10.1.0
         version: 10.1.0(@types/react@19.2.14)(react@19.2.4)
@@ -1619,6 +1622,11 @@ packages:
 
   react-highlight-selection@1.0.2:
     resolution: {integrity: sha512-dhaJbjCYqIxMQ30GIYxF/fThKzmzqt+K4yWK+kJiDnqxM9HkhMMWCTAYqbpxxhgUo4m2vnTL7nCousnF2qc35w==}
+
+  react-icons@5.5.0:
+    resolution: {integrity: sha512-MEFcXdkP3dLo8uumGI5xN3lDFNsRtrjbOEKDLD7yv76v4wpnEq2Lt2qeHaQOr34I/wPN3s3+N08WkQ+CW37Xiw==}
+    peerDependencies:
+      react: '*'
 
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
@@ -3502,6 +3510,10 @@ snapshots:
     dependencies:
       react: 16.14.0
       react-dom: 16.14.0(react@16.14.0)
+
+  react-icons@5.5.0(react@19.2.4):
+    dependencies:
+      react: 19.2.4
 
   react-is@16.13.1: {}
 

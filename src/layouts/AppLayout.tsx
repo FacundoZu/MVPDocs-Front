@@ -1,13 +1,23 @@
 import { Outlet } from "react-router";
-
+import Breadcrumbs from "../components/Breadcrumbs";
+import Sidebar from "../components/sidebar/Sidebar";
 
 export default function AppLayout() {
-
     return (
-        <main className="flex h-screen">
-            <section className="w-full px-10 overflow-y-auto">
-                <Outlet />
-            </section>
-        </main>
-    )
+        <div className="flex flex-col h-screen bg-gray-50">
+            <header className="bg-white border-b border-gray-200 px-6 py-3 flex items-center justify-between shrink-0 z-10">
+                <Breadcrumbs />
+                <div className="flex items-center gap-4">
+                    {/* Acciones globales futuras */}
+                </div>
+            </header>
+
+            <div className="flex flex-1 overflow-hidden">
+                <Sidebar />
+                <main className="flex-1 overflow-y-auto">
+                    <Outlet />
+                </main>
+            </div>
+        </div>
+    );
 }

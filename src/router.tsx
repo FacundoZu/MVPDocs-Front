@@ -1,16 +1,34 @@
-import { BrowserRouter, Routes, Route } from "react-router";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import AppLayout from "./layouts/AppLayout";
-import { Documents } from "./views/Documents";
+import { ProjectProvider } from "./context/ProjectContext";
+import { ProjectDocuments } from "./views/ProjectDocuments";
+import { DocumentViewer } from "./views/DocumentViewer";
 
+const queryClient = new QueryClient({
+    defaultOptions: {
+        queries: {
+            staleTime: 1000 * 60 * 5, // 5 minutos
+            retry: 1,
+        },
+    },
+});
 
 export default function Router() {
     return (
-        <BrowserRouter>
-            <Routes>
-                <Route path="/" element={<AppLayout />}>
-                    <Route index element={<Documents />} />
-                </Route>
-            </Routes>
-        </BrowserRouter>
-    )
+        <QueryClientProvider client={queryClient}>
+            <ProjectProvider>
+                <BrowserRouter>
+                    <Routes>
+                        <Route path="/" element={<AppLayout />}>
+                            <Route index element={<Navigate to="/projects" replace />} />
+                            <Route path="projects" element={<Navigate to="/" replace />} />
+                            <Route path="projects/:projectId" element={<ProjectDocuments />} />
+                            <Route path="projects/:projectId/documents/:documentId" element={<DocumentViewer />} />
+                        </Route>
+                    </Routes>
+                </BrowserRouter>
+            </ProjectProvider>
+        </QueryClientProvider>
+    );
 }
