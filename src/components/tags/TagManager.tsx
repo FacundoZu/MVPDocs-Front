@@ -1,30 +1,29 @@
 import { FaSearch, FaTag } from "react-icons/fa";
-
 import { TagList } from './TagList';
-import { getTags } from '../../API/TagAPI';
 import type { Tag } from '../../types/tagTypes';
-import { useQuery } from '@tanstack/react-query';
-import Loader from '../UI/Loader';
 import { TagFormModal } from "./TagFormModal";
 import { useState } from 'react';
+import { useLocation } from "react-router";
 
 
-export const TagManager = () => {
+interface TagManagerProps {
+    projectId: string;
+    tags: Tag[]
+    handleCreateQuote: ({ tagId, color }: { tagId: Tag['_id'], color: Tag['color'] }) => void
+}
+
+export const TagManager = ({ projectId, tags, handleCreateQuote }: TagManagerProps) => {
     const [isModalOpen, setIsModalOpen] = useState(false)
 
-    // TODO Traer el projectId de la URL
-    const projectId = '65a1b2c3d4e5f6a7b8c9d0e1'
+    const location = useLocation()
+    const quertParams = new URLSearchParams(location.search)
+    const sideBarOpen = quertParams.get('sidebar')
 
-    // Cargar tags al montar
-    const { data, isLoading } = useQuery<Tag[]>({
-        queryKey: ['tags', projectId],
-        queryFn: () => getTags(projectId),
-    })
 
-    if (isLoading) return <Loader />
+    if (!sideBarOpen) return null
 
-    if (data) return (
-        <div className="flex flex-col bg-gray-100 p-6 min-h-screen max-h-screen relative max-w-1/4">
+    return (
+        <div className="flex flex-col bg-gray-100 p-6 min-h-full max-h-screen relative max-w-1/4">
             {/* Header */}
             <div className="">
                 <div className="flex items-center justify-between">
@@ -53,7 +52,8 @@ export const TagManager = () => {
             {/* Tag List */}
             <div className="max-h-64 overflow-y-auto mt-2 py-4 pr-2 grow scroll-bar-hide">
                 <TagList
-                    tags={data}
+                    tags={tags}
+                    handleCreateQuote={handleCreateQuote}
                 />
             </div>
 
