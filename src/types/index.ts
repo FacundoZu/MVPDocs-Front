@@ -1,3 +1,5 @@
+import type { Tag } from "./tagTypes";
+
 export interface SummarizeParams {
     content: string;
     maxWords?: number;
@@ -7,7 +9,7 @@ export interface SuggestTagsParams {
     selectedText: string;
     contextBefore?: string;
     contextAfter?: string;
-    existingTags?: string[];
+    existingTags?: Tag[];
 }
 
 export interface SuggestCategoriesParams {

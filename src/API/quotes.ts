@@ -3,6 +3,7 @@ import api from '../lib/axios';
 export interface Quote {
     _id: string;
     documentId: string;
+    tagId?: string;
     position: {
         rawStart: number;
         rawEnd: number;
@@ -29,6 +30,14 @@ export interface CreateQuoteRequest {
     contextBefore?: string;
     contextAfter?: string;
     tags?: string[];
+}
+
+export interface CreateQuoteRequest2 {
+    plainStart: number;
+    plainEnd: number;
+    selectedText: string;
+    contextBefore: string;
+    contextAfter: string;
 }
 
 export const quoteApi = {

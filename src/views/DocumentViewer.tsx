@@ -1,19 +1,21 @@
-import { useState } from 'react';
 import { useParams } from 'react-router';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { documentApi } from '../API/documents';
-import { quoteApi } from '../API/quotes';
-import { tagApi } from '../API/tags';
+import { quoteApi, type CreateQuoteRequest2 } from '../API/quotes';
 import { FiLoader, FiAlertCircle } from 'react-icons/fi';
 import MarkdownWithHighlights from '../components/viewer/MarkdownWithHighlights';
-import TagPanel from '../components/viewer/TagPanel';
+import { getTags } from '../API/TagAPI';
+import { TagManager } from '../components/tags/TagManager';
+import { useState } from 'react';
+import type { Tag } from '../types/tagTypes';
+import { useNavigate } from 'react-router';
 
 export function DocumentViewer() {
+    const navigate = useNavigate();
     const { projectId, documentId } = useParams<{ projectId: string; documentId: string }>();
     const queryClient = useQueryClient();
 
-    const [tagPanelOpen, setTagPanelOpen] = useState(true);
-    const [tagPanelAutoForm, setTagPanelAutoForm] = useState(false);
+    const [selectedQuote, setSelectedQuote] = useState<CreateQuoteRequest2 | null>(null);
 
     const { data: document, isLoading: isLoadingDoc, error } = useQuery({
         queryKey: ['document', documentId],
@@ -29,7 +31,7 @@ export function DocumentViewer() {
 
     const { data: tags = [] } = useQuery({
         queryKey: ['tags', projectId],
-        queryFn: () => tagApi.list(projectId!),
+        queryFn: () => getTags(projectId!),
         enabled: !!projectId,
     });
 
@@ -40,40 +42,21 @@ export function DocumentViewer() {
         },
     });
 
-    const handleCreateQuote = ({
-        tagId,
-        color,
-        plainStart,
-        plainEnd,
-        selectedText,
-        contextBefore,
-        contextAfter,
-    }: {
-        tagId: string;
-        color: string;
-        plainStart: number;
-        plainEnd: number;
-        selectedText: string;
-        contextBefore: string;
-        contextAfter: string;
-    }) => {
+    const handleCreateQuote = ({ tagId, color }: { tagId: Tag['_id'], color: Tag['color'] }) => {
         if (!documentId) return;
+        if (!selectedQuote) return;
         createQuoteMutation.mutate({
             documentId,
-            plainStart,
-            plainEnd,
-            selectedText,
+            plainStart: selectedQuote?.plainStart,
+            plainEnd: selectedQuote?.plainEnd,
+            selectedText: selectedQuote?.selectedText,
             color,
             tags: [tagId],
-            contextBefore,
-            contextAfter,
+            contextBefore: selectedQuote?.contextBefore,
+            contextAfter: selectedQuote?.contextAfter,
         });
-    };
-
-    // Abre el panel de tags y activa el formulario de creación automáticamente
-    const handleOpenTagPanelForCreate = () => {
-        setTagPanelAutoForm(true);
-        setTagPanelOpen(true);
+        navigate(location.pathname);
+        setSelectedQuote(null);
     };
 
     if (isLoadingDoc) {
@@ -103,24 +86,13 @@ export function DocumentViewer() {
                         content={document.markdownContent}
                         quotes={quotes}
                         tags={tags}
-                        onCreateQuote={handleCreateQuote}
-                        onOpenTagPanel={handleOpenTagPanelForCreate}
+                        onSelectQuote={setSelectedQuote}
+                        selectedQuote={selectedQuote}
                     />
                 </div>
             </div>
 
-            {/* Panel lateral de tags (colapsable) */}
-            <TagPanel
-                projectId={projectId!}
-                tags={tags}
-                quotes={quotes}
-                isOpen={tagPanelOpen}
-                onToggle={() => {
-                    setTagPanelOpen((v) => !v);
-                    if (tagPanelOpen) setTagPanelAutoForm(false);
-                }}
-                autoOpenForm={tagPanelAutoForm}
-            />
+            <TagManager projectId={projectId!} tags={tags} handleCreateQuote={handleCreateQuote} />
         </div>
     );
 }

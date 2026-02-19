@@ -1,9 +1,10 @@
 import { useRef, useState, useCallback, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import type { Quote } from '../../API/quotes';
-import type { Tag } from '../../API/tags';
+import type { CreateQuoteRequest2, Quote } from '../../API/quotes';
 import QuotePopover from './QuotePopover';
+import type { Tag } from '../../types/tagTypes';
+import { suggestTags } from '../../API/AIAPI';
 
 interface SelectionState {
     plainStart: number;
@@ -19,16 +20,8 @@ interface MarkdownWithHighlightsProps {
     content: string;
     quotes: Quote[];
     tags: Tag[];
-    onCreateQuote: (params: {
-        tagId: string;
-        color: string;
-        plainStart: number;
-        plainEnd: number;
-        selectedText: string;
-        contextBefore: string;
-        contextAfter: string;
-    }) => void;
-    onOpenTagPanel: () => void;
+    onSelectQuote: (quote: CreateQuoteRequest2) => void;
+    selectedQuote: CreateQuoteRequest2 | null;
 }
 
 /**
@@ -72,51 +65,22 @@ function findNodeAtOffset(container: HTMLElement, targetOffset: number): { node:
     }
     return null;
 }
-
-const markdownComponents = {
-    h1: ({ children }: any) => <h1 className="text-2xl font-bold text-gray-900 mt-6 mb-3">{children}</h1>,
-    h2: ({ children }: any) => <h2 className="text-xl font-semibold text-gray-800 mt-5 mb-2">{children}</h2>,
-    h3: ({ children }: any) => <h3 className="text-lg font-semibold text-gray-800 mt-4 mb-2">{children}</h3>,
-    p: ({ children }: any) => <p className="text-gray-700 leading-relaxed mb-4">{children}</p>,
-    strong: ({ children }: any) => <strong className="font-semibold text-gray-900">{children}</strong>,
-    em: ({ children }: any) => <em className="italic text-gray-700">{children}</em>,
-    ul: ({ children }: any) => <ul className="list-disc list-inside mb-4 space-y-1 text-gray-700">{children}</ul>,
-    ol: ({ children }: any) => <ol className="list-decimal list-inside mb-4 space-y-1 text-gray-700">{children}</ol>,
-    li: ({ children }: any) => <li className="text-gray-700">{children}</li>,
-    blockquote: ({ children }: any) => (
-        <blockquote className="border-l-4 border-gray-300 pl-4 italic text-gray-600 my-4">{children}</blockquote>
-    ),
-    code: ({ inline, children }: any) =>
-        inline ? (
-            <code className="bg-gray-100 text-gray-800 px-1.5 py-0.5 rounded text-sm font-mono">{children}</code>
-        ) : (
-            <pre className="bg-gray-100 rounded-lg p-4 overflow-x-auto mb-4">
-                <code className="text-sm font-mono text-gray-800">{children}</code>
-            </pre>
-        ),
-    hr: () => <hr className="border-gray-200 my-6" />,
-    a: ({ href, children }: any) => (
-        <a href={href} className="text-blue-600 hover:underline" target="_blank" rel="noopener noreferrer">
-            {children}
-        </a>
-    ),
-};
-
 interface HighlightRect {
     top: number;
     left: number;
     width: number;
     height: number;
     color: string;
-    quoteId: string;
+    quoteId?: string;
+
 }
 
 export default function MarkdownWithHighlights({
     content,
     quotes,
     tags,
-    onCreateQuote,
-    onOpenTagPanel,
+    onSelectQuote,
+    selectedQuote,
 }: MarkdownWithHighlightsProps) {
     const containerRef = useRef<HTMLDivElement>(null);
     const wrapperRef = useRef<HTMLDivElement>(null);
@@ -127,13 +91,40 @@ export default function MarkdownWithHighlights({
     useEffect(() => {
         const container = containerRef.current;
         const wrapper = wrapperRef.current;
-        if (!container || !wrapper || quotes.length === 0) {
+        if (!container || !wrapper || quotes.length === 0 && !selection && !selectedQuote) { // Pequeña optimización
             setHighlightRects([]);
             return;
         }
 
         const wrapperRect = wrapper.getBoundingClientRect();
         const rects: HighlightRect[] = [];
+
+        // Cambiamos "selection" por "activeSelection" para que evalúe ambos estados
+        const activeSelection = selection || selectedQuote;
+
+        if (activeSelection) {
+            // Usamos "!" porque sabemos que plainStart/plainEnd existen en ambos tipos
+            const selectedStart = findNodeAtOffset(container, activeSelection.plainStart!);
+            const selectedEnd = findNodeAtOffset(container, activeSelection.plainEnd!);
+
+            if (selectedStart && selectedEnd) {
+                const range = document.createRange();
+                range.setStart(selectedStart.node, selectedStart.offset);
+                range.setEnd(selectedEnd.node, selectedEnd.offset);
+
+                const clientRects = Array.from(range.getClientRects());
+                for (const r of clientRects) {
+                    if (r.width === 0) continue;
+                    rects.push({
+                        top: r.top - wrapperRect.top + wrapper.scrollTop,
+                        left: r.left - wrapperRect.left,
+                        width: r.width,
+                        height: r.height,
+                        color: '#3B82F6', // Un gris azulado (slate-500) queda mejor como estado pendiente que #000
+                    });
+                }
+            }
+        }
 
         for (const quote of quotes) {
             const start = findNodeAtOffset(container, quote.position.plainStart);
@@ -163,7 +154,7 @@ export default function MarkdownWithHighlights({
         }
 
         setHighlightRects(rects);
-    }, [quotes, content]);
+    }, [quotes, content, selection, selectedQuote]);
 
     const handleMouseUp = useCallback(() => {
         const sel = window.getSelection();
@@ -198,11 +189,9 @@ export default function MarkdownWithHighlights({
         });
     }, []);
 
-    const handleSelectTag = useCallback((tag: Tag) => {
+    const handleSelectTag = useCallback(() => {
         if (!selection) return;
-        onCreateQuote({
-            tagId: tag._id,
-            color: tag.color,
+        onSelectQuote({
             plainStart: selection.plainStart,
             plainEnd: selection.plainEnd,
             selectedText: selection.selectedText,
@@ -211,7 +200,15 @@ export default function MarkdownWithHighlights({
         });
         setSelection(null);
         window.getSelection()?.removeAllRanges();
-    }, [selection, onCreateQuote]);
+    }, [selection, onSelectQuote]);
+
+    const addTagWithAI = async () => {
+        if (!selection) return;
+        const AiTags = await suggestTags({ selectedText: selection.selectedText, existingTags: tags });
+        console.log(AiTags);
+
+        tags.push(...AiTags);
+    }
 
     return (
         <div ref={wrapperRef} className="relative">
@@ -241,22 +238,23 @@ export default function MarkdownWithHighlights({
                 onMouseUp={handleMouseUp}
                 className="select-text relative z-0"
             >
-                <ReactMarkdown remarkPlugins={[remarkGfm]} components={markdownComponents}>
-                    {content}
-                </ReactMarkdown>
+                <article className="prose prose-slate max-w-none prose-headings:font-bold prose-h1:text-2xl prose-h2:text-xl prose-a:text-blue-600">
+                    <ReactMarkdown>
+                        {content}
+                    </ReactMarkdown>
+                </article>
             </div>
 
             {selection && (
                 <QuotePopover
                     x={selection.x}
                     y={selection.y}
-                    tags={tags}
                     onSelectTag={handleSelectTag}
+                    onAddTagWithAI={addTagWithAI}
                     onClose={() => setSelection(null)}
                     onOpenTagPanel={() => {
                         setSelection(null);
                         window.getSelection()?.removeAllRanges();
-                        onOpenTagPanel();
                     }}
                 />
             )}

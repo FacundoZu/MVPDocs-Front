@@ -7,7 +7,7 @@ export interface Tag {
         _id: string;
         name: string;
         color: string;
-    };
+    } | string;
     projectId: string;
     usageCount: number;
     createdAt: string;

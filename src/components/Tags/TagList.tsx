@@ -3,10 +3,12 @@ import type { Tag } from '../../types/tagTypes';
 
 interface TagListProps {
     tags: Tag[];
+    handleCreateQuote: ({ tagId, color }: { tagId: Tag['_id'], color: Tag['color'] }) => void
 }
 
 export const TagList: React.FC<TagListProps> = ({
-    tags
+    tags,
+    handleCreateQuote
 }) => {
 
     if (tags.length === 0) {
@@ -24,7 +26,8 @@ export const TagList: React.FC<TagListProps> = ({
     return (
         <div className="space-y-4 text-sm">
             {tags.map(tag => (
-                <div
+                <button
+                    onClick={() => handleCreateQuote({ tagId: tag._id, color: tag.color })}
                     key={tag._id}
                     className="bg-white pl-4 pr-2 py-2 rounded-lg flex items-center justify-between w-full border border-gray-200"
                 >
@@ -40,7 +43,7 @@ export const TagList: React.FC<TagListProps> = ({
                         <span className="px-2 py-1 rounded-2xl bg-gray-100 text-gray-500 text-xs font-bold">{tag.usageCount}</span>
                         <MdKeyboardArrowRight className="text-gray-400 font-bold" />
                     </div>
-                </div>
+                </button>
             ))}
         </div>
     );

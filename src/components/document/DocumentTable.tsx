@@ -60,7 +60,7 @@ export default function DocumentTable({
     };
 
     const filteredAndSortedDocuments = useMemo(() => {
-        let filtered = documents.filter((doc) =>
+        const filtered = documents.filter((doc) =>
             doc.name?.toLowerCase().includes(searchTerm.toLowerCase())
         );
 
