@@ -5,8 +5,8 @@ import { FaRegCopy } from "react-icons/fa6";
 import { useCallback, useEffect, useState } from "react";
 import { generateSummary } from "../../API/AIAPI";
 import ReactMarkdown from "react-markdown";
-import Loader from "../UI/Loader";
 import { toast } from "sonner";
+import Loader from "../ui/Loader";
 
 interface ModalIASummaryProps {
     content: string;
@@ -58,11 +58,12 @@ export default function ModalIASummary({ content }: ModalIASummaryProps) {
     const copyToClipboard = () => {
         navigator.clipboard.writeText(summary)
         toast.success('Resumen copiado al portapapeles')
+        navigate(location.pathname, { replace: true });
     }
 
     if (isOpen) return (
-        <section className="w-full h-full fixed flex justify-end left-0 top-0 z-20 bg-black/50 backdrop-blur-lg">
-            <div className="w-1/3 h-full bg-white overflow-y-auto flex flex-col justify-between">
+        <section className="w-full h-full fixed flex justify-end left-0 top-0 z-20 bg-black/20">
+            <div className="w-1/4 h-full bg-white overflow-y-auto flex flex-col justify-between">
                 <div className="border-b border-gray-200 flex items-center justify-between p-6">
                     <h2 className="text-2xl font-bold flex items-center gap-4">
                         <div className="bg-gray-200 text-purple-700 p-2 rounded-2xl flex items-center justify-center">
@@ -91,14 +92,14 @@ export default function ModalIASummary({ content }: ModalIASummaryProps) {
 
                 <div className="border-t border-gray-200 p-6 flex gap-2">
                     <button
-                        className="flex items-center gap-2 p-2 border border-gray-200 rounded-md disabled:opacity-50 disabled:cursor-default hover:bg-gray-100 transition-colors duration-300 cursor-pointer"
+                        className="flex text-indigo-600 items-center gap-2 p-2 border border-gray-200 rounded-md disabled:opacity-50 disabled:cursor-default hover:bg-gray-100 transition-colors duration-300 cursor-pointer"
                         onClick={copyToClipboard}
                         disabled={loading}
                     >
                         <FaRegCopy />
                     </button>
                     <button
-                        className="flex items-center gap-2 p-2 border border-gray-200 rounded-md disabled:opacity-50 disabled:cursor-default hover:bg-gray-100 transition-colors duration-300 cursor-pointer"
+                        className="flex text-indigo-600 items-center gap-2 p-2 border border-gray-200 rounded-md disabled:opacity-50 disabled:cursor-default hover:bg-gray-100 transition-colors duration-300 cursor-pointer"
                         onClick={generateAISummary}
                         disabled={loading}
                     >
