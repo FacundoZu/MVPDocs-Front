@@ -54,7 +54,7 @@ export const TagFormModal = ({ isOpen, onClose, existingTag, projectId }: TagFor
   if (!isOpen) return null;
 
   return (
-    <div className="overflow-y-hidden h-full w-full flex flex-col items-center justify-end z-10 bg-black/20 backdrop-blur-lg absolute top-0 left-0">
+    <div className="overflow-y-hidden h-full w-full flex flex-col items-center justify-end z-10 bg-black/10 backdrop-blur-xs absolute top-0 left-0">
 
       <div className="bg-white w-full p-6 rounded-t-2xl open-modal">
         <header className='flex flex-col gap-2'>

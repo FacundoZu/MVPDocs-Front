@@ -48,7 +48,6 @@ export function ProjectDocuments() {
         <div className="flex flex-col h-full bg-gray-50 p-8">
             <div className="max-w-6xl mx-auto w-full space-y-6">
                 <div>
-                    <h2 className="text-xl font-semibold text-gray-900 mb-4">Subir Documento</h2>
                     <DocumentUpload
                         projectId={projectId}
                         onUploadSuccess={() => {
@@ -60,7 +59,7 @@ export function ProjectDocuments() {
 
                 <div>
                     <h2 className="text-xl font-semibold text-gray-900 mb-4">
-                        Documentos
+                        Documentos del proyecto <span className="text-xs text-gray-400 ml-2 font-semibold">{tableDocuments.length} archivo/s</span>
                         {isLoading && <span className="text-sm font-normal text-gray-400 ml-2">Cargando...</span>}
                     </h2>
                     <DocumentTable
