@@ -29,7 +29,7 @@ export const TagList: React.FC<TagListProps> = ({
                 <button
                     onClick={() => handleCreateQuote({ tagId: tag._id, color: tag.color })}
                     key={tag._id}
-                    className="bg-white pl-4 pr-2 py-2 rounded-lg flex items-center justify-between w-full border border-gray-200"
+                    className="bg-white pl-4 pr-2 py-2 rounded-lg flex items-center justify-between w-full border border-gray-200 hover:bg-gray-50 hover:border-gray-200 transition-colors duration-300 cursor-pointer"
                 >
                     <div className="flex items-center gap-2">
                         <div

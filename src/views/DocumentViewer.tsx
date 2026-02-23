@@ -9,6 +9,7 @@ import { TagManager } from '../components/tags/TagManager';
 import { useState } from 'react';
 import type { Tag } from '../types/tagTypes';
 import { useNavigate } from 'react-router';
+import ModalIASummary from '../components/AI/ModalIASummary';
 
 export function DocumentViewer() {
     const navigate = useNavigate();
@@ -79,7 +80,7 @@ export function DocumentViewer() {
     return (
         <div className="flex h-full overflow-hidden">
             {/* Contenido del documento */}
-            <div className="flex-1 overflow-y-auto p-8">
+            <div className="grow overflow-y-auto p-8 scroll-bar-hide">
                 <div className="max-w-3xl mx-auto">
                     <h1 className="text-2xl font-bold text-gray-900 mb-8">{document.title}</h1>
                     <MarkdownWithHighlights
@@ -93,6 +94,7 @@ export function DocumentViewer() {
             </div>
 
             <TagManager projectId={projectId!} tags={tags} handleCreateQuote={handleCreateQuote} />
+            <ModalIASummary content={document.markdownContent} />
         </div>
     );
 }

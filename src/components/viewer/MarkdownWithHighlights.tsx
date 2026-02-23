@@ -120,7 +120,7 @@ export default function MarkdownWithHighlights({
                         left: r.left - wrapperRect.left,
                         width: r.width,
                         height: r.height,
-                        color: '#3B82F6', // Un gris azulado (slate-500) queda mejor como estado pendiente que #000
+                        color: '#4f39f6',
                     });
                 }
             }

@@ -1,17 +1,18 @@
 import { useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router';
+import { useNavigate, useLocation } from 'react-router';
+import { LuPlus, LuSparkles } from 'react-icons/lu';
 
 interface QuotePopoverProps {
     x: number;
     y: number;
     onClose: () => void;
-    onOpenTagPanel: () => void;
     onAddTagWithAI: () => void;
     onSelectTag: () => void;
 }
 
-export default function QuotePopover({ x, y, onSelectTag, onClose, onOpenTagPanel, onAddTagWithAI }: QuotePopoverProps) {
+export default function QuotePopover({ x, y, onSelectTag, onClose, onAddTagWithAI }: QuotePopoverProps) {
     const navigate = useNavigate();
+    const location = useLocation();
 
     const ref = useRef<HTMLDivElement>(null);
 
@@ -34,13 +35,23 @@ export default function QuotePopover({ x, y, onSelectTag, onClose, onOpenTagPane
         <div
             ref={ref}
             style={{ top: y + 8, left: x }}
-            className="fixed z-50 bg-white rounded-xl shadow-xl border border-gray-200 p-3 min-w-[200px] max-w-[260px]"
+            className="fixed z-10 flex items-center justify-center bg-white rounded-full shadow-xl border border-gray-200 animate-in fade-in zoom-in-95 duration-200 text-sm p-4 font-semibold"
         >
-            <div>
-                <button onClick={handleCreateQuote} >
-                    Crear Código
-                </button>
-            </div>
+            <button
+                onClick={handleCreateQuote}
+                className="group flex items-center gap-2 text-gray-700 cursor-pointer px-2 border-r border-gray-300 hover:text-indigo-600 transition-colors duration-300"
+            >
+                <LuPlus className='text-indigo-600' />
+                <span>Crear Código</span>
+            </button>
+
+            <button
+                onClick={onAddTagWithAI}
+                className="group flex items-center gap-2 text-indigo-600 cursor-pointer px-2 hover:text-gray-700 transition-colors duration-300"
+            >
+                <LuSparkles className='text-indigo-600' />
+                <span>IA Sugerir</span>
+            </button>
         </div>
     );
 }

@@ -25,6 +25,11 @@
     font-family: "Inter", sans-serif;
 }
 
+::selection {
+    background-color: #4f39f6;
+    color: #ffffff;
+}
+
 .scroll-bar-hide {
 
     /* Para Chrome, Safari y Edge */

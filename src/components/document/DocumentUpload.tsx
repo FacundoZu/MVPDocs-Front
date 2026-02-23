@@ -1,7 +1,6 @@
 import { useState, useCallback } from 'react';
 import type { DragEvent, ChangeEvent } from 'react';
 import Button from '../ui/Button';
-import { Card } from '../ui/Card';
 import Spinner from '../ui/Spinner';
 import { FiUploadCloud } from 'react-icons/fi';
 import { documentApi } from '../../API';
@@ -109,7 +108,7 @@ export default function DocumentUpload({ onUploadSuccess, projectId }: DocumentU
     };
 
     return (
-        <Card className="shadow-none">
+        <div>
             <input
                 id="file-upload"
                 type="file"
@@ -125,9 +124,9 @@ export default function DocumentUpload({ onUploadSuccess, projectId }: DocumentU
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
                 className={`
-          block relative border-2 border-dashed rounded-lg p-8 text-center transition-all ${!selectedFile && 'cursor-pointer'}
-          ${isDragging ? 'border-blue-500 bg-blue-50' : 'border-gray-300 bg-gray-50'}
-          ${isUploading || selectedFile ? 'pointer-events-none' : 'hover:border-blue-400 hover:bg-blue-50/50'}
+          block relative border-2 border-dashed rounded-lg p-14 text-center transition-all ${!selectedFile && 'cursor-pointer'}
+          ${isDragging ? 'border-indigo-500 bg-white' : 'border-gray-300 bg-white'}
+          ${isUploading || selectedFile ? 'pointer-events-none' : 'hover:border-indigo-400 hover:bg-indigo-50/50'}
         `}
             >
                 {isUploading ? (
@@ -158,29 +157,21 @@ export default function DocumentUpload({ onUploadSuccess, projectId }: DocumentU
                     </div>
                 ) : (
                     <>
-                        <div className="mb-4">
-                            <FiUploadCloud className="mx-auto h-12 w-12 text-gray-400" />
+                        <div className="mb-6">
+                            <FiUploadCloud className="mx-auto size-14 text-indigo-600" />
                         </div>
 
                         <div className="mb-4">
-                            <p className="text-lg font-medium text-gray-700 mb-1">
-                                Arrastra tu documento aquí
+                            <h3 className="text-2xl font-bold text-gray-700 mb-1">
+                                Arrastra tu archivo .docx aquí
+                            </h3>
+                            <p className="text-sm text-gray-400 font-semibold">
+                                o haz clic para seleccionar un archivo desde tu ordenador
                             </p>
-                            <p className="text-sm text-gray-500">
-                                o haz clic para seleccionar un archivo
-                            </p>
                         </div>
 
-                        <div className="mb-4">
-                            <div className="inline-block pointer-events-none">
-                                <Button variant="primary" type="button">
-                                    Seleccionar archivo
-                                </Button>
-                            </div>
-                        </div>
-
-                        <p className="text-xs text-gray-500">
-                            Formatos soportados: DOCX (máx. 10MB)
+                        <p className="text-xs text-gray-400">
+                            Tamaño máximo: 10MB | Formato: .docx
                         </p>
                     </>
                 )}
@@ -191,6 +182,6 @@ export default function DocumentUpload({ onUploadSuccess, projectId }: DocumentU
                     <p className="text-sm text-red-600">{error}</p>
                 </div>
             )}
-        </Card>
+        </div>
     );
 }

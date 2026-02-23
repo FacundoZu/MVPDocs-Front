@@ -149,12 +149,12 @@ export default function DocumentTable({
                             {currentDocuments.map((doc) => (
                                 <tr key={doc.id} className="hover:bg-gray-50 transition-colors">
                                     <td className="px-6 py-4 whitespace-nowrap">
-                                        <div className="flex items-center gap-3">
+                                        <button onClick={() => onDocumentView?.(doc)} className="flex items-center gap-3">
                                             <div className="shrink-0">{getFileIcon(doc.type)}</div>
                                             <div className="text-sm font-medium text-gray-900 truncate max-w-md">
                                                 {doc.name}
                                             </div>
-                                        </div>
+                                        </button>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                         {formatDate(doc.uploadedAt)}
