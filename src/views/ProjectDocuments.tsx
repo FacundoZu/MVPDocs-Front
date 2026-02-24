@@ -10,11 +10,9 @@ export function ProjectDocuments() {
     const navigate = useNavigate();
     const queryClient = useQueryClient();
 
-    // Cargamos el proyecto (que ya incluye sus documentos embebidos)
     const { data: project, isLoading } = useQuery({
         queryKey: ['project', projectId],
         queryFn: () => projectApi.getById(projectId!),
-        enabled: !!projectId,
     });
 
     const deleteMutation = useMutation({
@@ -33,7 +31,6 @@ export function ProjectDocuments() {
         );
     }
 
-    // Los documentos vienen embebidos en el proyecto: { id, title, createdAt }
     type EmbeddedDoc = { id: string; title: string; createdAt?: string };
     const embeddedDocs: EmbeddedDoc[] = (project as any)?.documents ?? [];
     const tableDocuments = embeddedDocs.map((doc) => ({
@@ -64,7 +61,7 @@ export function ProjectDocuments() {
                     </h2>
                     <DocumentTable
                         documents={tableDocuments}
-                        onDocumentView={(doc) => navigate(`/projects/${projectId}/documents/${doc.id}`)}
+                        onDocumentView={(doc) => navigate(`/app/projects/${projectId}/documents/${doc.id}`)}
                         onDocumentDelete={(id) => deleteMutation.mutate(id)}
                     />
                 </div>

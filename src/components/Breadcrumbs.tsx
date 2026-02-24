@@ -30,7 +30,7 @@ export default function Breadcrumbs() {
         <nav className="flex items-center justify-between w-full text-sm">
             <div className="flex items-center space-x-2">
                 <Link
-                    to={`/projects/${projectId}`}
+                    to={`/app/projects/${projectId}`}
                     className={`font-medium transition-colors ${documentId ? 'text-gray-500 hover:text-gray-800' : 'text-gray-900'
                         }`}
                 >

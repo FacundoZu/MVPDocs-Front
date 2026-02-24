@@ -25,7 +25,8 @@ export default function ProjectItem({ project }: ProjectItemProps) {
     const isActive = activeProjectId === project._id;
 
     const handleClick = () => {
-        navigate(`/projects/${project._id}`);
+        console.log(project._id, isActive)
+        navigate(`/app/projects/${project._id}`);
         setIsOpen((prev) => !prev);
     };
 
@@ -34,8 +35,8 @@ export default function ProjectItem({ project }: ProjectItemProps) {
             <button
                 onClick={handleClick}
                 className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors text-left ${isActive
-                        ? 'bg-blue-50 text-blue-700 font-medium'
-                        : 'text-gray-700 hover:bg-gray-100'
+                    ? 'bg-blue-50 text-blue-700 font-medium'
+                    : 'text-gray-700 hover:bg-gray-100'
                     }`}
             >
                 {isOpen
