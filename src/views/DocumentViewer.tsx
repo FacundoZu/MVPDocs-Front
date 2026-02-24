@@ -10,6 +10,7 @@ import { useState } from 'react';
 import type { Tag } from '../types/tagTypes';
 import { useNavigate } from 'react-router';
 import ModalIASummary from '../components/AI/ModalIASummary';
+import ChatSidebar from '../components/AI/ChatSidebar';
 
 export function DocumentViewer() {
     const navigate = useNavigate();
@@ -95,6 +96,7 @@ export function DocumentViewer() {
 
             <TagManager projectId={projectId!} tags={tags} handleCreateQuote={handleCreateQuote} />
             <ModalIASummary content={document.markdownContent} />
+            <ChatSidebar context={document.markdownContent} />
         </div>
     );
 }

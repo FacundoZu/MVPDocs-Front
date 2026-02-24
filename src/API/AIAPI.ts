@@ -1,6 +1,7 @@
 import { openRouter } from "../lib/ia";
 import type { SuggestCategoriesParams, SuggestTagsParams, SummarizeParams } from "../types";
 import { streamText, generateText } from "ai"
+import type { ChatMessage } from "../types/chatTypes";
 
 const model = 'arcee-ai/trinity-large-preview:free'
 
@@ -8,6 +9,12 @@ interface StreamTextParams {
     content: string;
     system: string;
     model?: string;
+}
+
+interface SendIAMessage {
+    content: string
+    messages: ChatMessage[]
+    context: string
 }
 
 export const generateSummary = async ({ content, maxWords = 100 }: SummarizeParams): Promise<AsyncIterable<string>> => {
@@ -22,6 +29,36 @@ export const generateSummary = async ({ content, maxWords = 100 }: SummarizePara
         - Devuelve el resumen en formato Markdown pero no le agregues un titulo principal
 
         RESUMEN:`;
+
+    return streamTextFunction({ content, system })
+}
+
+export const generateIAMessageStream = async ({ content, context, messages }: SendIAMessage) => {
+    const system = `
+    Eres un Asistente de Investigación Cualitativa especializado en Análisis de Datos. 
+    Tu objetivo es ayudar al investigador a profundizar en los significados, tensiones y categorías de sus documentos.
+
+    ### CONTEXTO DEL DOCUMENTO (EL "TERRENO DE VERDAD"):
+    ---
+    ${context}
+    ---
+
+    ### INSTRUCCIONES DE COMPORTAMIENTO:
+    1. **Fidelidad al Texto**: Tus respuestas deben basarse principalmente en el contexto proporcionado arriba. Si el usuario pregunta algo que no está en el texto, indícalo claramente: "Basado exclusivamente en este fragmento, no hay evidencia de..., sin embargo, teóricamente podríamos inferir...".
+    2. **Análisis Cualitativo**: No te limites a resumir. Busca contradicciones, patrones latentes o significados subyacentes en la narrativa del documento.
+    3. **Rol de Socio de Crítica**: Si el usuario propone una interpretación, actúa como un "abogado del diablo" constructivo, sugiriendo otras posibles lecturas del mismo fragmento.
+    4. **Brevedad**: Mantén las respuestas concisas y académicas.
+
+    ### RESTRICCIONES:
+    - No inventes datos que no estén en el documento.
+    - Si citas el texto, usa comillas "..." para diferenciarlo de tus propias palabras.
+    - No saludes en cada mensaje; ve directo al grano del análisis.
+
+    Tu respuesta debe basarse tambien en los mensajes anteriores del usuario.
+
+    ### MENSajes Anteriores:
+    ${messages.map((message, index) => `MENSAJE ${index + 1}: ${message}`).join('\n')}
+    `
 
     return streamTextFunction({ content, system })
 }

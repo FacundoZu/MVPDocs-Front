@@ -47,9 +47,9 @@ export default function Breadcrumbs() {
                 )}
             </div>
             {documentId && (
-                <Link to={location.pathname + '?isOpen=true'} className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-4xl hover:bg-indigo-700 transition-colors duration-200">
+                <Link to={location.pathname + '?ia-sidebar=true'} className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-4xl hover:bg-indigo-700 transition-colors duration-200">
                     <BsStars />
-                    <span>Resumir con IA</span>
+                    <span>Asistente IA</span>
                 </Link>
             )}
         </nav>
