@@ -15,6 +15,7 @@ export type SendMessageParams = {
 
 export async function getMessages({ projectId, documentId }: GetMessagesParams) {
     try {
+        console.log(projectId, documentId);
 
         const response = await api.get<ChatMessage[]>(`/chat/messages?projectId=${projectId}&documentId=${documentId}`);
 

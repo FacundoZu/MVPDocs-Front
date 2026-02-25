@@ -52,6 +52,14 @@
     animation: close-modal 0.3s ease-in-out;
 }
 
+.open-sidebar {
+    animation: open-sidebar 0.5s ease-in-out;
+}
+
+.close-sidebar {
+    animation: close-sidebar 0.3s ease-in-out;
+}
+
 @keyframes open-modal {
     from {
         opacity: 0;
@@ -71,5 +79,27 @@
 
     to {
         transform: translateY(100%);
+    }
+}
+
+@keyframes open-sidebar {
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0%);
+    }
+}
+
+@keyframes close-sidebar {
+    from {
+        transform: translateX(0%);
+    }
+
+    to {
+        transform: translateX(100%);
     }
 }
