@@ -12,8 +12,8 @@ import {
   type EdgeChange,
   type Viewport 
 } from 'reactflow';
-import axios from 'axios';
 import dagre from 'dagre';
+import api from '../lib/axios';
 
 interface NetworkState {
   nodes: Node[];
@@ -63,7 +63,7 @@ export const useNetworkStore = create<NetworkState>()((set, get) => ({
   loadFromBackend: async (networkId: string) => {
     set({ loading: true });
     try {
-      const { data } = await axios.get(`/api/networks/${networkId}`);
+      const { data } = await api.get(`/networks/${networkId}`);
       set({ 
         nodes: data.nodes || [], 
         edges: data.edges || [], 
@@ -81,7 +81,7 @@ export const useNetworkStore = create<NetworkState>()((set, get) => ({
   saveNetwork: async (networkId) => {
     const { nodes, edges, viewport, version } = get();
     try {
-      const { data } = await axios.patch(`/api/networks/${networkId}`, {
+      const { data } = await api.patch(`/networks/${networkId}`, {
         nodes,
         edges,
         viewport,

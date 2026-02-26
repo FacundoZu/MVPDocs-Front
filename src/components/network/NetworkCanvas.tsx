@@ -74,6 +74,7 @@ export const NetworkCanvas = ({ networkId }: NetworkCanvasProps) => {
   }, [networkId, loadFromBackend]);
 
 
+
   // Si nodes está vacío, React Flow no mostrará nada
   if (nodes.length === 0) {
     return <div className="p-10 text-center">Cargando nodos... (ID: {networkId})</div>;
