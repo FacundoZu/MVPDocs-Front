@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { LuPlus, LuSparkles, LuChevronLeft } from 'react-icons/lu';
+import { LuPlus, LuSparkles, LuChevronLeft, LuBookOpen } from 'react-icons/lu';
 import type { Tag } from '../../types/tagTypes';
 
 interface QuotePopoverProps {
@@ -8,14 +8,14 @@ interface QuotePopoverProps {
     yTop: number;
     tags: Tag[];
     onClose: () => void;
-    onAddTagWithAI: () => void;
     onSelectTag: (tag: Tag) => void;
+    onTriggerAI: (actionType: 'SUGGEST_TAGS' | 'SUGGEST_LITERATURE') => void; // Nueva prop simplificada
 }
 
-export default function QuotePopover({ x, y, yTop, tags, onSelectTag, onClose, onAddTagWithAI }: QuotePopoverProps) {
+export default function QuotePopover({ x, y, yTop, tags, onSelectTag, onClose, onTriggerAI }: QuotePopoverProps) {
     const ref = useRef<HTMLDivElement>(null);
     const [showTags, setShowTags] = useState(false);
-    const [top, setTop] = useState(y + 8);
+    const [, setTop] = useState(y + 8);
 
     // Flip hacia arriba si el popover se sale de la pantalla por abajo
     useLayoutEffect(() => {
@@ -30,9 +30,7 @@ export default function QuotePopover({ x, y, yTop, tags, onSelectTag, onClose, o
 
     useEffect(() => {
         const handleClick = (e: MouseEvent) => {
-            if (ref.current && !ref.current.contains(e.target as Node)) {
-                onClose();
-            }
+            if (ref.current && !ref.current.contains(e.target as Node)) onClose();
         };
         document.addEventListener('mousedown', handleClick);
         return () => document.removeEventListener('mousedown', handleClick);
@@ -41,8 +39,8 @@ export default function QuotePopover({ x, y, yTop, tags, onSelectTag, onClose, o
     return (
         <div
             ref={ref}
-            style={{ top, left: x }}
-            className="fixed z-50 bg-white rounded-2xl shadow-xl border border-gray-200 animate-in fade-in zoom-in-95 duration-200 overflow-hidden"
+            style={{ top: y + 8, left: x }}
+            className="fixed z-10 flex items-center justify-center bg-white rounded-full shadow-xl border border-gray-200 animate-in fade-in zoom-in-95 duration-200 text-sm p-2 font-semibold"
         >
             {!showTags && (
                 <div className="flex items-center text-sm font-semibold p-3 gap-2">
@@ -55,11 +53,19 @@ export default function QuotePopover({ x, y, yTop, tags, onSelectTag, onClose, o
                     </button>
 
                     <button
-                        onClick={onAddTagWithAI}
-                        className="flex items-center gap-2 text-primary cursor-pointer px-3 py-1.5 rounded-xl hover:bg-primary/10 hover:text-gray-700 transition-colors duration-200"
+                        onClick={() => onTriggerAI('SUGGEST_TAGS')}
+                        className="group flex items-center gap-2 text-indigo-600 cursor-pointer px-3 border-r border-gray-200 hover:text-indigo-800 transition-colors"
                     >
-                        <LuSparkles className="text-primary shrink-0" />
-                        <span>IA Sugerir</span>
+                        <LuSparkles />
+                        <span>IA Tags</span>
+                    </button>
+
+                    <button
+                        onClick={() => onTriggerAI('SUGGEST_LITERATURE')}
+                        className="group flex items-center gap-2 text-indigo-600 cursor-pointer px-3 hover:text-indigo-800 transition-colors"
+                    >
+                        <LuBookOpen />
+                        <span>IA Literatura</span>
                     </button>
                 </div>
             )}
@@ -113,6 +119,7 @@ export default function QuotePopover({ x, y, yTop, tags, onSelectTag, onClose, o
                     </div>
                 </div>
             )}
+
         </div>
     );
 }

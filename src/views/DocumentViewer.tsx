@@ -5,9 +5,7 @@ import { quoteApi, type CreateQuoteRequest2 } from '../API/quotes';
 import { FiLoader, FiAlertCircle } from 'react-icons/fi';
 import MarkdownWithHighlights from '../components/viewer/MarkdownWithHighlights';
 import { getTags } from '../API/TagAPI';
-import { TagManager } from '../components/tags/TagManager';
-import ModalIASummary from '../components/AI/ModalIASummary';
-
+import ChatSidebar from '../components/AI/ChatSidebar';
 
 export function DocumentViewer() {
     const { projectId, documentId } = useParams<{ projectId: string; documentId: string }>();
@@ -73,7 +71,6 @@ export function DocumentViewer() {
         <div className="flex h-full overflow-hidden">
             <div className="grow overflow-y-auto p-8 scroll-bar-hide">
                 <div className="max-w-3xl mx-auto">
-                    <h1 className="text-2xl font-bold text-gray-900 mb-8">{document.title}</h1>
                     <MarkdownWithHighlights
                         content={document.markdownContent}
                         quotes={quotes}
@@ -84,8 +81,7 @@ export function DocumentViewer() {
                 </div>
             </div>
 
-            <TagManager projectId={projectId!} tags={tags} handleCreateQuote={({ tagId, color }) => handleCreateQuote({ tagId, color, plainStart: 0, plainEnd: 0, selectedText: '', contextBefore: '', contextAfter: '' })} />
-            <ModalIASummary content={document.markdownContent} />
+            <ChatSidebar context={document.markdownContent} />
         </div>
     );
 }

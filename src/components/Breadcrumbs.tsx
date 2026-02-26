@@ -4,10 +4,13 @@ import { projectApi } from '../API/projects';
 import { documentApi } from '../API/documents';
 import { BsStars, BsDiagram3 } from 'react-icons/bs';
 import { HiMiniSlash } from 'react-icons/hi2';
+import { useAIChatStore } from '../stores/useAIChatStore'; // 1. Importamos el store
 
 export default function Breadcrumbs() {
     const { projectId, documentId } = useParams();
-    const location = useLocation();
+
+    // 2. Obtenemos la función para abrir el sidebar
+    const openSidebar = useAIChatStore((state) => state.openSidebar);
 
     const { data: project } = useQuery({
         queryKey: ['project', projectId],
@@ -48,21 +51,25 @@ export default function Breadcrumbs() {
                 )}
             </div>
             <div className="flex items-center gap-3">
-                <Link 
-                    to={`/app/projects/${projectId}/network`} 
-                    target="_blank" 
+                <Link
+                    to={`/app/projects/${projectId}/network`}
+                    target="_blank"
                     rel="noopener noreferrer"
                     className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-4xl hover:bg-gray-50 transition-colors duration-200 shadow-sm"
                 >
                     <BsDiagram3 className="text-indigo-600" />
                     <span>Ver Red Semántica</span>
                 </Link>
-            {documentId && ( 
-                <Link to={location.pathname + '?isOpen=true'} className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-4xl hover:bg-indigo-700 transition-colors duration-200">
-                    <BsStars />
-                    <span>Resumir con IA</span>
-                </Link>
-            )}
+                {documentId && (
+                    // 3. Cambiamos Link por button y le pasamos el onClick
+                    <button
+                        onClick={openSidebar}
+                        className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-4xl hover:bg-indigo-700 transition-colors duration-200 cursor-pointer shadow-sm"
+                    >
+                        <BsStars />
+                        <span>Asistente IA</span>
+                    </button>
+                )}
             </div>
         </nav>
     );
