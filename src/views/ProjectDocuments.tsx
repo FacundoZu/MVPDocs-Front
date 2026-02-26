@@ -6,7 +6,7 @@ import DocumentUpload from '../components/document/DocumentUpload';
 import DocumentTable from '../components/document/DocumentTable';
 import type { ProjectWithDocs } from '../components/sidebar/ProjectItem';
 
-export function ProjectDocuments() {
+export default function ProjectDocuments() {
     const { projectId } = useParams<{ projectId: string }>();
     const navigate = useNavigate();
     const queryClient = useQueryClient();
