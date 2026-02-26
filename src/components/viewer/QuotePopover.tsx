@@ -40,7 +40,7 @@ export default function QuotePopover({ x, y, yTop, tags, onSelectTag, onClose, o
         <div
             ref={ref}
             style={{ top: y + 8, left: x }}
-            className="fixed z-10 flex items-center justify-center bg-white rounded-full shadow-xl border border-gray-200 animate-in fade-in zoom-in-95 duration-200 text-sm p-2 font-semibold"
+            className="fixed z-10 flex items-center justify-center bg-white rounded-2xl shadow-xl border border-gray-200 animate-in fade-in zoom-in-95 duration-200 text-sm font-semibold"
         >
             {!showTags && (
                 <div className="flex items-center text-sm font-semibold p-3 gap-2">

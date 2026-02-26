@@ -78,6 +78,7 @@ interface HighlightRect {
 export default function MarkdownWithHighlights({
     content,
     quotes,
+    tags,
     onSelectQuote,
     selectedQuote,
 }: MarkdownWithHighlightsProps) {

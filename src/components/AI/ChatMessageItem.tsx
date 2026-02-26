@@ -36,10 +36,10 @@ export default function ChatMessageItem({ message }: ChatMessageItemProps) {
 
                 {/* Burbuja de chat */}
                 <div className={`p-4 rounded-2xl shadow-sm ${isUser
-                    ? 'bg-indigo-600 text-white rounded-tr-none' // Ajusté el color a tu diseño previo
+                    ? 'bg-white/80 rounded-tr-none' // Ajusté el color a tu diseño previo
                     : 'bg-white border border-gray-200 rounded-tl-none text-slate-700'
                     }`}>
-                    <article className={`prose max-w-none text-sm ${isUser ? 'prose-invert' : 'prose-slate'}`}>
+                    <article className={`prose max-w-none text-sm prose-slate`}>
                         <ReactMarkdown>{message.content}</ReactMarkdown>
                     </article>
                 </div>
