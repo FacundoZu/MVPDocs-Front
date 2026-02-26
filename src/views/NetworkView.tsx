@@ -1,9 +1,9 @@
 import { useParams, useNavigate } from "react-router";
 import { NetworkCanvas } from "../components/network/NetworkCanvas";
 import { useNetworkStore } from "../store/UseNetworkStore";
-import axios from "axios";
 import { toast } from "sonner";
 import { BsDiagram3, BsPlusCircle, BsSquare, BsArrowRight } from "react-icons/bs";
+import api from "../lib/axios";
 
 export const NetworkView = () => {
     const { projectId, networkId } = useParams();
@@ -19,9 +19,10 @@ export const NetworkView = () => {
 
     const handleGenerateNetwork = async () => {
         try {
-            const { data } = await axios.post('/api/networks/generate-from-project', {
+            const { data } = await api.post('/networks/generate-from-project', {
                 projectId
             });
+            console.log
             
             toast.success("Red generada con éxito");
             navigate(`/app/projects/${projectId}/network/${data._id}`);
