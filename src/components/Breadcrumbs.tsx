@@ -1,4 +1,4 @@
-import { useParams, Link } from 'react-router';
+import { useParams, Link, useLocation } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 import { projectApi } from '../API/projects';
 import { documentApi } from '../API/documents';
@@ -7,6 +7,7 @@ import { HiMiniSlash } from 'react-icons/hi2';
 
 export default function Breadcrumbs() {
     const { projectId, documentId } = useParams();
+    const location = useLocation();
 
     const { data: project } = useQuery({
         queryKey: ['project', projectId],
@@ -28,7 +29,7 @@ export default function Breadcrumbs() {
 
     return (
         <nav className="flex items-center justify-between w-full text-sm">
-            <div className="flex items-center space-x-2">
+            <div className="flex items-center space-x-2 py-2">
                 <Link
                     to={`/app/projects/${projectId}`}
                     className={`font-medium transition-colors ${documentId ? 'text-gray-500 hover:text-gray-800' : 'text-gray-900'

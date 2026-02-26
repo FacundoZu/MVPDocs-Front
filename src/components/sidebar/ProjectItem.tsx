@@ -25,7 +25,6 @@ export default function ProjectItem({ project }: ProjectItemProps) {
     const isActive = activeProjectId === project._id;
 
     const handleClick = () => {
-        console.log(project._id, isActive)
         navigate(`/app/projects/${project._id}`);
         setIsOpen((prev) => !prev);
     };

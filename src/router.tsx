@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router";
+import { BrowserRouter, Routes, Route } from "react-router";
 import AppLayout from "./layouts/AppLayout";
 import { ProjectProvider } from "./context/ProjectContext";
 import { ProjectDocuments } from "./views/ProjectDocuments";
@@ -15,8 +15,6 @@ export default function Router() {
                     <Route path="/" element={<LandingPage />} />
 
                     <Route path="/app" element={<AppLayout />}>
-                        <Route index element={<Navigate to="/app/projects" replace />} />
-                        <Route path="projects" element={<Navigate to="/app" replace />} />
                         <Route path="projects/:projectId" element={<ProjectDocuments />} />
                         <Route path="projects/:projectId/documents/:documentId" element={<DocumentViewer />} />
                     </Route>

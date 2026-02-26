@@ -37,7 +37,7 @@ export function LandingPage() {
                         onClick={() => navigate('/app')}
                         className="flex items-center gap-2 px-6 py-3 bg-primary hover:bg-primary/90 text-white font-semibold rounded-xl transition-all duration-200 hover:shadow-xl hover:shadow-primary/25 hover:-translate-y-0.5 cursor-pointer"
                     >
-                        🚀 Comenzar
+                        Comenzar
                     </button>
                 </div>
 

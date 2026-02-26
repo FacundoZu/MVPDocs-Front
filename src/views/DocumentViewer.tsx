@@ -79,7 +79,6 @@ export function DocumentViewer() {
 
     return (
         <div className="flex h-full overflow-hidden">
-            {/* Contenido del documento */}
             <div className="grow overflow-y-auto p-8 scroll-bar-hide">
                 <div className="max-w-3xl mx-auto">
                     <h1 className="text-2xl font-bold text-gray-900 mb-8">{document.title}</h1>

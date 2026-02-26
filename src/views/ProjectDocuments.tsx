@@ -4,6 +4,7 @@ import { projectApi } from '../API/projects';
 import { documentApi } from '../API/documents';
 import DocumentUpload from '../components/document/DocumentUpload';
 import DocumentTable from '../components/document/DocumentTable';
+import type { ProjectWithDocs } from '../components/sidebar/ProjectItem';
 
 export function ProjectDocuments() {
     const { projectId } = useParams<{ projectId: string }>();
@@ -13,6 +14,12 @@ export function ProjectDocuments() {
     const { data: project, isLoading } = useQuery({
         queryKey: ['project', projectId],
         queryFn: () => projectApi.getById(projectId!),
+        initialData: () => {
+            const all = queryClient.getQueryData<ProjectWithDocs[]>(['projects']);
+            return all?.find(p => p._id === projectId);
+        },
+        initialDataUpdatedAt: () => queryClient.getQueryState(['projects'])?.dataUpdatedAt,
+        staleTime: 30_000,
     });
 
     const deleteMutation = useMutation({
