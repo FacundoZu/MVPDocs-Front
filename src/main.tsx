@@ -1,6 +1,7 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
+import 'reactflow/dist/style.css';
 import Router from './router.tsx'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 

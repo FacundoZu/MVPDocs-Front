@@ -2,7 +2,7 @@ import { useParams, Link } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 import { projectApi } from '../API/projects';
 import { documentApi } from '../API/documents';
-import { BsStars } from 'react-icons/bs';
+import { BsStars, BsDiagram3 } from 'react-icons/bs';
 import { HiMiniSlash } from 'react-icons/hi2';
 
 export default function Breadcrumbs() {
@@ -46,12 +46,23 @@ export default function Breadcrumbs() {
                     </>
                 )}
             </div>
-            {documentId && (
+            <div className="flex items-center gap-3">
+                <Link 
+                    to={`/projects/${projectId}/network`} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-4xl hover:bg-gray-50 transition-colors duration-200 shadow-sm"
+                >
+                    <BsDiagram3 className="text-indigo-600" />
+                    <span>Ver Red Semántica</span>
+                </Link>
+            {documentId && ( 
                 <Link to={location.pathname + '?isOpen=true'} className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-4xl hover:bg-indigo-700 transition-colors duration-200">
                     <BsStars />
                     <span>Resumir con IA</span>
                 </Link>
             )}
+            </div>
         </nav>
     );
 }
