@@ -7,7 +7,7 @@ import MarkdownWithHighlights from '../components/viewer/MarkdownWithHighlights'
 import { getTags } from '../API/TagAPI';
 import ChatSidebar from '../components/AI/ChatSidebar';
 
-export function DocumentViewer() {
+export default function DocumentViewer() {
     const { projectId, documentId } = useParams<{ projectId: string; documentId: string }>();
     const queryClient = useQueryClient();
 

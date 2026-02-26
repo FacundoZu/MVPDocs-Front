@@ -3,7 +3,7 @@ import DemoAnimation from '../components/landing/DemoAnimation';
 import { FiZap } from 'react-icons/fi';
 
 
-export function LandingPage() {
+export default function LandingPage() {
     const navigate = useNavigate();
 
     return (

@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { BsDiagram3, BsPlusCircle, BsSquare, BsArrowRight } from "react-icons/bs";
 import api from "../lib/axios";
 
-export const NetworkView = () => {
+export default function NetworkView() {
     const { projectId, networkId } = useParams();
     const navigate = useNavigate();
     const { applyAutoLayout } = useNetworkStore();
@@ -22,11 +22,10 @@ export const NetworkView = () => {
             const { data } = await api.post('/networks/generate-from-project', {
                 projectId
             });
-            console.log
-            
+
             toast.success("Red generada con éxito");
             navigate(`/app/projects/${projectId}/network/${data._id}`);
-        } catch (error) {
+        } catch {
             toast.error("Error al generar la red inicial");
         }
     };
@@ -38,7 +37,7 @@ export const NetworkView = () => {
                     Redes Semánticas {networkId ? `- ${networkId}` : ''}
                 </h1>
                 {networkId && (
-                    <button 
+                    <button
                         onClick={applyAutoLayout}
                         className="bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-blue-700 transition"
                     >
@@ -46,8 +45,8 @@ export const NetworkView = () => {
                     </button>
                 )}
             </header>
-            
-            <main className="flex-grow relative overflow-y-auto p-8">
+
+            <main className="grow relative overflow-y-auto p-8">
                 {networkId ? (
                     <NetworkCanvas projectId={projectId!} networkId={networkId!} />
                 ) : (
@@ -58,7 +57,7 @@ export const NetworkView = () => {
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            <button 
+                            <button
                                 onClick={handleGenerateNetwork}
                                 className="group border-2 border-dashed border-gray-300 rounded-xl p-6 flex flex-col items-center justify-center gap-4 hover:border-green-500 hover:bg-green-50 transition-all duration-300 min-h-[200px]"
                             >
@@ -70,7 +69,7 @@ export const NetworkView = () => {
                             </button>
 
                             {mockNetworks.map((net) => (
-                                <div 
+                                <div
                                     key={net.id}
                                     className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow cursor-default"
                                 >
@@ -91,10 +90,10 @@ export const NetworkView = () => {
                                         </span> */}
                                     </div>
                                     <h3 className="font-bold text-gray-800 text-lg mb-1">{net.name}</h3>
-                                    <p className="text-xs text-gray-400 mb-6 uppercase font-semibold">Proyecto: {projectId?.substring(0,8)}... • {net.date}</p>
+                                    <p className="text-xs text-gray-400 mb-6 uppercase font-semibold">Proyecto: {projectId?.substring(0, 8)}... • {net.date}</p>
                                     {/* <p className="text-sm text-gray-500 mb-6">Creada el {net.date}</p> */}
-                                    
-                                    <button 
+
+                                    <button
                                         onClick={() => toast.info("Funcionalidad simulada para el MVP")}
                                         className="w-full py-2 bg-gray-100 text-gray-700 rounded-lg font-medium hover:bg-indigo-600 hover:text-white transition-colors"
                                     >

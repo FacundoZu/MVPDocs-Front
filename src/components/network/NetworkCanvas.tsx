@@ -15,11 +15,12 @@ interface NetworkCanvasProps {
   networkId: string;
 }
 
-export const NetworkCanvas = ({ projectId, networkId }: NetworkCanvasProps) => {
-  const { 
+// TODO agregar prop projectId
+export const NetworkCanvas = ({ networkId }: NetworkCanvasProps) => {
+  const {
     nodes = [], edges = [], viewport,
-    onNodesChange, onEdgesChange, onConnect, 
-    loadFromBackend, saveNetwork 
+    onNodesChange, onEdgesChange, onConnect,
+    loadFromBackend, saveNetwork
   } = useNetworkStore();
 
   // 2. Estados para controlar el modal
@@ -49,7 +50,7 @@ export const NetworkCanvas = ({ projectId, networkId }: NetworkCanvasProps) => {
         if (!networkId) return;
         try {
           await saveNetwork(networkId);
-        } catch (error: any) {
+        } catch (error) {
           console.error("Error al guardar:", error);
         }
       }, 800),
@@ -68,7 +69,7 @@ export const NetworkCanvas = ({ projectId, networkId }: NetworkCanvasProps) => {
   useEffect(() => {
     console.log("Cargando red con ID:", networkId); // 👈 Log 1
     if (networkId) {
-        loadFromBackend(networkId);
+      loadFromBackend(networkId);
     }
   }, [networkId, loadFromBackend]);
 
@@ -93,10 +94,10 @@ export const NetworkCanvas = ({ projectId, networkId }: NetworkCanvasProps) => {
         <Controls />
         <MiniMap />
       </ReactFlow>
-      <EdgeLabelModal 
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
-        onSubmit={onModalSubmit} 
+      <EdgeLabelModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={onModalSubmit}
       />
     </div>
   );
