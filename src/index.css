@@ -1,25 +1,20 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
 @import "tailwindcss";
-@plugin "@tailwindcss/typography";
 
-@layer base {
-    :root {
-        /* Colores Primarios - Azul */
-        --color-primary: #2563eb;
-        --color-primary-hover: #1d4ed8;
+@theme {
+    --color-primary: #4f39f6;
+    --color-primary-hover: #1d4ed8;
 
-        /* Colores Secundarios - Gris */
-        --color-secondary: #4b5563;
-        --color-secondary-hover: #374151;
+    --color-secondary: #4b5563;
+    --color-secondary-hover: #374151;
 
-        /* Colores Semánticos */
-        --color-success: #10b981;
-        --color-error: #ef4444;
-        --color-warning: #f59e0b;
-        --color-info: #3b82f6;
-    }
+    --color-success: #10b981;
+    --color-error: #ef4444;
+    --color-warning: #f59e0b;
+    --color-info: #3b82f6;
 }
+
 
 * {
     font-family: "Inter", sans-serif;
@@ -30,17 +25,40 @@
     color: #ffffff;
 }
 
+/* Scrollbar global */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #4f39f6;
+    border-radius: 999px;
+    opacity: 0.6;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #3b27d8;
+}
+
+/* Firefox */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: #4f39f6 transparent;
+}
+
 .scroll-bar-hide {
 
-    /* Para Chrome, Safari y Edge */
     &::-webkit-scrollbar {
         display: none;
     }
 
-    /* Para Firefox */
     scrollbar-width: none;
 
-    /* Para Internet Explorer y Edge antiguo */
     -ms-overflow-style: none;
 }
 

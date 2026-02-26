@@ -51,7 +51,7 @@ export default function Sidebar() {
                                 onClick={() => setShowModal(true)}
                                 className="mt-2 text-xs text-blue-600 hover:underline"
                             >
-                                Crear el primero
+                                Crear un proyecto
                             </button>
                         </div>
                     ) : (
