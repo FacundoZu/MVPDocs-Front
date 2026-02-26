@@ -1,10 +1,8 @@
 import { useRef, useState, useCallback, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
 import type { CreateQuoteRequest2, Quote } from '../../API/quotes';
 import QuotePopover from './QuotePopover';
-import type { Tag } from '../../types/tagTypes';
-import { suggestTags } from '../../API/AIAPI';
+import { useAIChatStore } from '../../stores/useAIChatStore';
 
 interface SelectionState {
     plainStart: number;
@@ -19,7 +17,6 @@ interface SelectionState {
 interface MarkdownWithHighlightsProps {
     content: string;
     quotes: Quote[];
-    tags: Tag[];
     onSelectQuote: (quote: CreateQuoteRequest2) => void;
     selectedQuote: CreateQuoteRequest2 | null;
 }
@@ -78,7 +75,6 @@ interface HighlightRect {
 export default function MarkdownWithHighlights({
     content,
     quotes,
-    tags,
     onSelectQuote,
     selectedQuote,
 }: MarkdownWithHighlightsProps) {
@@ -86,6 +82,9 @@ export default function MarkdownWithHighlights({
     const wrapperRef = useRef<HTMLDivElement>(null);
     const [selection, setSelection] = useState<SelectionState | null>(null);
     const [highlightRects, setHighlightRects] = useState<HighlightRect[]>([]);
+
+    // Instanciamos la función de Zustand
+    const triggerAIAction = useAIChatStore((state) => state.triggerAIAction);
 
     // Recalcular los rects de highlight cuando cambian los quotes o el contenido
     useEffect(() => {
@@ -189,6 +188,21 @@ export default function MarkdownWithHighlights({
         });
     }, []);
 
+    // Nueva función manejadora para el popover
+    const handleTriggerAI = (actionType: 'SUGGEST_TAGS' | 'SUGGEST_LITERATURE') => {
+        if (!selection) return;
+
+        // Enviamos la tarea a Zustand
+        triggerAIAction(actionType, {
+            selectedText: selection.selectedText,
+            contextBefore: selection.contextBefore,
+            contextAfter: selection.contextAfter,
+        });
+
+        setSelection(null);
+        window.getSelection()?.removeAllRanges();
+    };
+
     const handleSelectTag = useCallback(() => {
         if (!selection) return;
         onSelectQuote({
@@ -201,14 +215,6 @@ export default function MarkdownWithHighlights({
         setSelection(null);
         window.getSelection()?.removeAllRanges();
     }, [selection, onSelectQuote]);
-
-    const addTagWithAI = async () => {
-        if (!selection) return;
-        const AiTags = await suggestTags({ selectedText: selection.selectedText, existingTags: tags });
-        console.log(AiTags);
-
-        tags.push(...AiTags);
-    }
 
     return (
         <div ref={wrapperRef} className="relative">
@@ -250,12 +256,8 @@ export default function MarkdownWithHighlights({
                     x={selection.x}
                     y={selection.y}
                     onSelectTag={handleSelectTag}
-                    onAddTagWithAI={addTagWithAI}
+                    onTriggerAI={handleTriggerAI} // Pasamos el nuevo manejador
                     onClose={() => setSelection(null)}
-                    onOpenTagPanel={() => {
-                        setSelection(null);
-                        window.getSelection()?.removeAllRanges();
-                    }}
                 />
             )}
         </div>

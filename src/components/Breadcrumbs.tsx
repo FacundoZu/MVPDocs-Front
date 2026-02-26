@@ -4,9 +4,13 @@ import { projectApi } from '../API/projects';
 import { documentApi } from '../API/documents';
 import { BsStars } from 'react-icons/bs';
 import { HiMiniSlash } from 'react-icons/hi2';
+import { useAIChatStore } from '../stores/useAIChatStore'; // 1. Importamos el store
 
 export default function Breadcrumbs() {
     const { projectId, documentId } = useParams();
+
+    // 2. Obtenemos la función para abrir el sidebar
+    const openSidebar = useAIChatStore((state) => state.openSidebar);
 
     const { data: project } = useQuery({
         queryKey: ['project', projectId],
@@ -47,10 +51,14 @@ export default function Breadcrumbs() {
                 )}
             </div>
             {documentId && (
-                <Link to={location.pathname + '?ia-sidebar=true'} className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-4xl hover:bg-indigo-700 transition-colors duration-200">
+                // 3. Cambiamos Link por button y le pasamos el onClick
+                <button
+                    onClick={openSidebar}
+                    className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-4xl hover:bg-indigo-700 transition-colors duration-200 cursor-pointer shadow-sm"
+                >
                     <BsStars />
                     <span>Asistente IA</span>
-                </Link>
+                </button>
             )}
         </nav>
     );

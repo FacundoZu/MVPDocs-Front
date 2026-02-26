@@ -9,7 +9,6 @@ import { TagManager } from '../components/tags/TagManager';
 import { useState } from 'react';
 import type { Tag } from '../types/tagTypes';
 import { useNavigate } from 'react-router';
-import ModalIASummary from '../components/AI/ModalIASummary';
 import ChatSidebar from '../components/AI/ChatSidebar';
 
 export function DocumentViewer() {
@@ -83,11 +82,9 @@ export function DocumentViewer() {
             {/* Contenido del documento */}
             <div className="grow overflow-y-auto p-8 scroll-bar-hide">
                 <div className="max-w-3xl mx-auto">
-                    <h1 className="text-2xl font-bold text-gray-900 mb-8">{document.title}</h1>
                     <MarkdownWithHighlights
                         content={document.markdownContent}
                         quotes={quotes}
-                        tags={tags}
                         onSelectQuote={setSelectedQuote}
                         selectedQuote={selectedQuote}
                     />
@@ -95,7 +92,6 @@ export function DocumentViewer() {
             </div>
 
             <TagManager projectId={projectId!} tags={tags} handleCreateQuote={handleCreateQuote} />
-            <ModalIASummary content={document.markdownContent} />
             <ChatSidebar context={document.markdownContent} />
         </div>
     );
