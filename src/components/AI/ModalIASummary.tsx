@@ -92,14 +92,14 @@ export default function ModalIASummary({ content }: ModalIASummaryProps) {
 
                 <div className="border-t border-gray-200 p-6 flex gap-2">
                     <button
-                        className="flex text-indigo-600 items-center gap-2 p-2 border border-gray-200 rounded-md disabled:opacity-50 disabled:cursor-default hover:bg-gray-100 transition-colors duration-300 cursor-pointer"
+                        className="flex text-primary items-center gap-2 p-2 border border-gray-200 rounded-md disabled:opacity-50 disabled:cursor-default hover:bg-gray-100 transition-colors duration-300 cursor-pointer"
                         onClick={copyToClipboard}
                         disabled={loading}
                     >
                         <FaRegCopy />
                     </button>
                     <button
-                        className="flex text-indigo-600 items-center gap-2 p-2 border border-gray-200 rounded-md disabled:opacity-50 disabled:cursor-default hover:bg-gray-100 transition-colors duration-300 cursor-pointer"
+                        className="flex text-primary items-center gap-2 p-2 border border-gray-200 rounded-md disabled:opacity-50 disabled:cursor-default hover:bg-gray-100 transition-colors duration-300 cursor-pointer"
                         onClick={generateAISummary}
                         disabled={loading}
                     >

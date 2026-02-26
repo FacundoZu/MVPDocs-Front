@@ -125,8 +125,8 @@ export default function DocumentUpload({ onUploadSuccess, projectId }: DocumentU
                 onDrop={handleDrop}
                 className={`
           block relative border-2 border-dashed rounded-lg p-14 text-center transition-all ${!selectedFile && 'cursor-pointer'}
-          ${isDragging ? 'border-indigo-500 bg-white' : 'border-gray-300 bg-white'}
-          ${isUploading || selectedFile ? 'pointer-events-none' : 'hover:border-indigo-400 hover:bg-indigo-50/50'}
+          ${isDragging ? 'border-primary bg-white' : 'border-gray-300 bg-white'}
+          ${isUploading || selectedFile ? 'pointer-events-none' : 'hover:border-primary hover:bg-primary/10'}
         `}
             >
                 {isUploading ? (
@@ -158,7 +158,7 @@ export default function DocumentUpload({ onUploadSuccess, projectId }: DocumentU
                 ) : (
                     <>
                         <div className="mb-6">
-                            <FiUploadCloud className="mx-auto size-14 text-indigo-600" />
+                            <FiUploadCloud className="mx-auto size-14 text-primary" />
                         </div>
 
                         <div className="mb-4">

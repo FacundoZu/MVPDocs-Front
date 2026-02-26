@@ -19,8 +19,6 @@ export const TagManager = ({ projectId, tags, handleCreateQuote }: TagManagerPro
     const quertParams = new URLSearchParams(location.search)
     const sideBarOpen = quertParams.get('sidebar')
 
-    console.log('aaaaaaaaaaaaaaaaaa')
-
     if (!sideBarOpen) return null
 
     return (
