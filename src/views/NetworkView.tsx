@@ -24,7 +24,7 @@ export const NetworkView = () => {
             });
             
             toast.success("Red generada con éxito");
-            navigate(`/projects/${projectId}/network/${data._id}`);
+            navigate(`/app/projects/${projectId}/network/${data._id}`);
         } catch (error) {
             toast.error("Error al generar la red inicial");
         }

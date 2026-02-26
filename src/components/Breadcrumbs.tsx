@@ -49,7 +49,7 @@ export default function Breadcrumbs() {
             </div>
             <div className="flex items-center gap-3">
                 <Link 
-                    to={`/projects/${projectId}/network`} 
+                    to={`/app/projects/${projectId}/network`} 
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-4xl hover:bg-gray-50 transition-colors duration-200 shadow-sm"

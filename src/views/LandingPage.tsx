@@ -12,7 +12,7 @@ export function LandingPage() {
             <nav className="relative z-10 flex items-center justify-between px-8 py-5 max-w-6xl mx-auto">
                 <div className="flex items-center gap-2">
                     <FiZap className="w-5 h-5 text-primary" />
-                    <span className="font-bold text-lg tracking-tight">mvp-docs</span>
+                    <span className="font-bold text-lg tracking-tight">Taiper</span>
                 </div>
             </nav>
 
@@ -47,7 +47,7 @@ export function LandingPage() {
             <footer className="relative z-10 border-t border-white/5 py-8 text-center text-xs">
                 <div className="flex items-center justify-center gap-2 mb-1 text-primary">
                     <FiZap className="w-3.5 h-3.5" />
-                    <span>mvp-docs</span>
+                    <span>Taiper</span>
                 </div>
                 <p>Herramienta de análisis cualitativo para investigadores</p>
             </footer>
