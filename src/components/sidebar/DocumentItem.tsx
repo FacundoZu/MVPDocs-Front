@@ -17,11 +17,11 @@ export default function DocumentItem({ documentId, projectId, title }: DocumentI
         <button
             onClick={() => navigate(`/app/projects/${projectId}/documents/${documentId}`)}
             className={`w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm transition-colors text-left ${isActive
-                ? 'bg-blue-50 text-blue-700 font-medium'
+                ? 'bg-primary/10 text-primary font-medium'
                 : 'text-gray-600 hover:bg-gray-100'
                 }`}
         >
-            <FiFileText className={`w-3.5 h-3.5 shrink-0 ${isActive ? 'text-blue-500' : 'text-gray-400'}`} />
+            <FiFileText className={`w-3.5 h-3.5 shrink-0 ${isActive ? 'text-primary' : 'text-gray-400'}`} />
             <span className="truncate text-xs">{title}</span>
         </button>
     );

@@ -11,7 +11,7 @@ export function LandingPage() {
 
             <nav className="relative z-10 flex items-center justify-between px-8 py-5 max-w-6xl mx-auto">
                 <div className="flex items-center gap-2">
-                    <FiZap className="w-5 h-5 text-indigo-400" />
+                    <FiZap className="w-5 h-5 text-primary" />
                     <span className="font-bold text-lg tracking-tight">mvp-docs</span>
                 </div>
             </nav>

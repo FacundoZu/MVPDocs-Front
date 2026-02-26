@@ -6,17 +6,12 @@ import { FiLoader, FiAlertCircle } from 'react-icons/fi';
 import MarkdownWithHighlights from '../components/viewer/MarkdownWithHighlights';
 import { getTags } from '../API/TagAPI';
 import { TagManager } from '../components/tags/TagManager';
-import { useState } from 'react';
-import type { Tag } from '../types/tagTypes';
-import { useNavigate } from 'react-router';
 import ModalIASummary from '../components/AI/ModalIASummary';
 
+
 export function DocumentViewer() {
-    const navigate = useNavigate();
     const { projectId, documentId } = useParams<{ projectId: string; documentId: string }>();
     const queryClient = useQueryClient();
-
-    const [selectedQuote, setSelectedQuote] = useState<CreateQuoteRequest2 | null>(null);
 
     const { data: document, isLoading: isLoadingDoc, error } = useQuery({
         queryKey: ['document', documentId],
@@ -43,21 +38,18 @@ export function DocumentViewer() {
         },
     });
 
-    const handleCreateQuote = ({ tagId, color }: { tagId: Tag['_id'], color: Tag['color'] }) => {
+    const handleCreateQuote = ({ tagId, color, plainStart, plainEnd, selectedText, contextBefore, contextAfter }: CreateQuoteRequest2 & { tagId: string; color: string }) => {
         if (!documentId) return;
-        if (!selectedQuote) return;
         createQuoteMutation.mutate({
             documentId,
-            plainStart: selectedQuote?.plainStart,
-            plainEnd: selectedQuote?.plainEnd,
-            selectedText: selectedQuote?.selectedText,
+            plainStart,
+            plainEnd,
+            selectedText,
             color,
             tags: [tagId],
-            contextBefore: selectedQuote?.contextBefore,
-            contextAfter: selectedQuote?.contextAfter,
+            contextBefore,
+            contextAfter,
         });
-        navigate(location.pathname);
-        setSelectedQuote(null);
     };
 
     if (isLoadingDoc) {
@@ -86,13 +78,13 @@ export function DocumentViewer() {
                         content={document.markdownContent}
                         quotes={quotes}
                         tags={tags}
-                        onSelectQuote={setSelectedQuote}
-                        selectedQuote={selectedQuote}
+                        onSelectQuote={handleCreateQuote}
+                        selectedQuote={null}
                     />
                 </div>
             </div>
 
-            <TagManager projectId={projectId!} tags={tags} handleCreateQuote={handleCreateQuote} />
+            <TagManager projectId={projectId!} tags={tags} handleCreateQuote={({ tagId, color }) => handleCreateQuote({ tagId, color, plainStart: 0, plainEnd: 0, selectedText: '', contextBefore: '', contextAfter: '' })} />
             <ModalIASummary content={document.markdownContent} />
         </div>
     );

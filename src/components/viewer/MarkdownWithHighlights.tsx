@@ -1,6 +1,5 @@
 import { useRef, useState, useCallback, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
 import type { CreateQuoteRequest2, Quote } from '../../API/quotes';
 import QuotePopover from './QuotePopover';
 import type { Tag } from '../../types/tagTypes';
@@ -14,13 +13,14 @@ interface SelectionState {
     contextAfter: string;
     x: number;
     y: number;
+    yTop: number;
 }
 
 interface MarkdownWithHighlightsProps {
     content: string;
     quotes: Quote[];
     tags: Tag[];
-    onSelectQuote: (quote: CreateQuoteRequest2) => void;
+    onSelectQuote: (quote: CreateQuoteRequest2 & { tagId: string; color: string }) => void;
     selectedQuote: CreateQuoteRequest2 | null;
 }
 
@@ -186,10 +186,11 @@ export default function MarkdownWithHighlights({
             contextAfter,
             x: rect.left + rect.width / 2 - 100,
             y: rect.bottom,
+            yTop: rect.top,
         });
     }, []);
 
-    const handleSelectTag = useCallback(() => {
+    const handleSelectTag = useCallback((tag: Tag) => {
         if (!selection) return;
         onSelectQuote({
             plainStart: selection.plainStart,
@@ -197,6 +198,8 @@ export default function MarkdownWithHighlights({
             selectedText: selection.selectedText,
             contextBefore: selection.contextBefore,
             contextAfter: selection.contextAfter,
+            tagId: tag._id,
+            color: tag.color,
         });
         setSelection(null);
         window.getSelection()?.removeAllRanges();
@@ -249,13 +252,11 @@ export default function MarkdownWithHighlights({
                 <QuotePopover
                     x={selection.x}
                     y={selection.y}
+                    yTop={selection.yTop}
+                    tags={tags}
                     onSelectTag={handleSelectTag}
                     onAddTagWithAI={addTagWithAI}
                     onClose={() => setSelection(null)}
-                    onOpenTagPanel={() => {
-                        setSelection(null);
-                        window.getSelection()?.removeAllRanges();
-                    }}
                 />
             )}
         </div>

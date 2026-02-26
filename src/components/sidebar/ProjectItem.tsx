@@ -34,7 +34,7 @@ export default function ProjectItem({ project }: ProjectItemProps) {
             <button
                 onClick={handleClick}
                 className={`w-full flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors text-left ${isActive
-                    ? 'bg-blue-50 text-blue-700 font-medium'
+                    ? 'bg-primary/10 text-primary font-medium'
                     : 'text-gray-700 hover:bg-gray-100'
                     }`}
             >
@@ -42,7 +42,7 @@ export default function ProjectItem({ project }: ProjectItemProps) {
                     ? <FiChevronDown className="w-4 h-4 shrink-0 text-gray-400" />
                     : <FiChevronRight className="w-4 h-4 shrink-0 text-gray-400" />
                 }
-                <FiFolder className={`w-4 h-4 shrink-0 ${isActive ? 'text-blue-600' : 'text-gray-400'}`} />
+                <FiFolder className={`w-4 h-4 shrink-0 ${isActive ? 'text-primary' : 'text-gray-400'}`} />
                 <span className="truncate">{project.name}</span>
                 {project.documents.length > 0 && (
                     <span className="ml-auto text-xs text-gray-400 shrink-0">{project.documents.length}</span>

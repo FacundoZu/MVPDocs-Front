@@ -23,7 +23,7 @@ export default function Breadcrumbs() {
 
     if (!projectId) {
         return (
-            <span className="text-sm text-gray-400">Selecciona un proyecto</span>
+            <span className="text-sm text-gray-400 py-2">Selecciona un proyecto</span>
         );
     }
 
@@ -48,7 +48,7 @@ export default function Breadcrumbs() {
                 )}
             </div>
             {documentId && (
-                <Link to={location.pathname + '?isOpen=true'} className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-4xl hover:bg-indigo-700 transition-colors duration-200">
+                <Link to={location.pathname + '?isOpen=true'} className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-4xl hover:bg-primary/90 transition-colors duration-200">
                     <BsStars />
                     <span>Resumir con IA</span>
                 </Link>

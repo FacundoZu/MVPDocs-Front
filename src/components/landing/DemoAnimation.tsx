@@ -104,7 +104,7 @@ export default function DemoAnimation() {
                             <div key={i}>
                                 {line.text}
                                 {line.highlight && (
-                                    <span className="bg-indigo-500/40 border-b-2 border-indigo-400 px-0.5 rounded transition-all duration-300">
+                                    <span className="bg-primary/40 border-b-2 border-primary px-0.5 rounded transition-all duration-300">
                                         {line.highlight}
                                     </span>
                                 )}
