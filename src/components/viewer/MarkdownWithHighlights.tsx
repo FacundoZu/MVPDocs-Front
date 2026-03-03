@@ -72,7 +72,13 @@ interface HighlightRect {
     height: number;
     color: string;
     quoteId?: string;
+}
 
+interface TagMarker {
+    quoteId: string;
+    top: number;
+    color: string;
+    name: string;
 }
 
 export default function MarkdownWithHighlights({
@@ -86,6 +92,7 @@ export default function MarkdownWithHighlights({
     const wrapperRef = useRef<HTMLDivElement>(null);
     const [selection, setSelection] = useState<SelectionState | null>(null);
     const [highlightRects, setHighlightRects] = useState<HighlightRect[]>([]);
+    const [tagMarkers, setTagMarkers] = useState<TagMarker[]>([]);
 
     // Instanciamos la función de Zustand
     const triggerAIAction = useAIChatStore((state) => state.triggerAIAction);
@@ -157,7 +164,40 @@ export default function MarkdownWithHighlights({
         }
 
         setHighlightRects(rects);
-    }, [quotes, content, selection, selectedQuote]);
+
+        // Calcular un punto de anclaje por quote para el badge de tag en el margen
+        const markers: TagMarker[] = [];
+        for (const quote of quotes) {
+            const start = findNodeAtOffset(container, quote.position.plainStart);
+            const end = findNodeAtOffset(container, quote.position.plainEnd);
+            if (!start || !end) continue;
+            try {
+                const range = document.createRange();
+                range.setStart(start.node, start.offset);
+                range.setEnd(end.node, end.offset);
+                const firstRect = Array.from(range.getClientRects()).find(r => r.width > 0);
+                if (!firstRect) continue;
+
+                const populatedTag = quote.tags[0];
+                markers.push({
+                    quoteId: quote._id,
+                    top: firstRect.top - wrapperRect.top + wrapper.scrollTop,
+                    color: quote.color,
+                    name: populatedTag?.name ?? '',
+                });
+            } catch { /* ignorar */ }
+        }
+        // Evitar superposición: ordenar por top y desplazar los que se solapan
+        markers.sort((a, b) => a.top - b.top);
+        const BADGE_HEIGHT = 22; // altura estimada del badge en px
+        for (let i = 1; i < markers.length; i++) {
+            const minTop = markers[i - 1].top + BADGE_HEIGHT + 4;
+            if (markers[i].top < minTop) {
+                markers[i].top = minTop;
+            }
+        }
+        setTagMarkers(markers);
+    }, [quotes, content, selection, selectedQuote, tags]);
 
     const handleMouseUp = useCallback(() => {
         const sel = window.getSelection();
@@ -224,7 +264,7 @@ export default function MarkdownWithHighlights({
     }, [selection, onSelectQuote]);
 
     return (
-        <div ref={wrapperRef} className="relative">
+        <div ref={wrapperRef} className="relative overflow-visible">
             {/* Highlights como overlays absolutos */}
             {highlightRects.map((rect, i) => (
                 <span
@@ -258,6 +298,32 @@ export default function MarkdownWithHighlights({
                 </article>
             </div>
 
+            {/* Tag badges en el margen derecho */}
+            {tagMarkers.map((marker) => (
+                <span
+                    key={marker.quoteId}
+                    style={{
+                        position: 'absolute',
+                        top: marker.top,
+                        left: containerRef.current
+                            ? containerRef.current.offsetWidth + 16
+                            : '100%',
+                        backgroundColor: marker.color + '20',
+                        borderLeft: `3px solid ${marker.color}`,
+                        color: marker.color,
+                        whiteSpace: 'nowrap',
+                        zIndex: 2,
+                    }}
+                    className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-r-full text-xs font-medium pointer-events-none"
+                >
+                    <span
+                        className="w-1.5 h-1.5 rounded-full shrink-0"
+                        style={{ backgroundColor: marker.color }}
+                    />
+                    {marker.name}
+                </span>
+            ))}
+
             {selection && (
                 <QuotePopover
                     x={selection.x}
@@ -265,7 +331,7 @@ export default function MarkdownWithHighlights({
                     yTop={selection.yTop}
                     tags={tags}
                     onSelectTag={handleSelectTag}
-                    onTriggerAI={handleTriggerAI} // Pasamos el nuevo manejador
+                    onTriggerAI={handleTriggerAI}
                     onClose={() => setSelection(null)}
                 />
             )}

@@ -13,7 +13,7 @@ export interface Quote {
         contextBefore?: string;
         contextAfter?: string;
     };
-    tags: string[];
+    tags: { _id: string; name: string; color: string }[];
     memo?: string;
     color: string;
     createdAt: string;

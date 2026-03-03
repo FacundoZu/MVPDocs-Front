@@ -10,18 +10,18 @@ export default function AppLayout() {
 
     return (
         <div className="flex flex-col h-screen bg-gray-50">
-            <header className="bg-white border-b border-gray-200 px-4 py-2 flex items-center justify-between shrink-0 z-10">
-                <div className="flex items-center gap-1">
+            <header className="bg-white border-b border-gray-200 px-2 py-2 flex items-center justify-between shrink-0 z-10">
+                <div className="flex items-center ">
                     <button
                         onClick={() => setSidebarOpen(v => !v)}
                         title={sidebarOpen ? 'Ocultar sidebar' : 'Mostrar sidebar'}
-                        className="p-2 text-gray-400 hover:text-primary hover:bg-primary/10 rounded-xl transition-colors duration-200"
+                        className="py-2 px-2 text-gray-400 hover:text-primary hover:bg-primary/10 rounded-xl transition-colors duration-200"
                     >
                         {sidebarOpen
                             ? <VscLayoutSidebarLeft className="w-5 h-5" />
                             : <VscLayoutSidebarLeftOff className="w-5 h-5" />}
                     </button>
-                    <Link to="/" className="hover:bg-gray-100 py-2 px-2 rounded-xl ml-6 transition-colors duration-200">
+                    <Link to="/" className="hover:bg-gray-100 py-2 px-2 rounded-xl transition-colors duration-200">
                         <FiZap className="w-5 h-5 text-primary" />
                     </Link>
                 </div>
