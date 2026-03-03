@@ -174,7 +174,7 @@ export default function ChatSidebar({ context }: ChatSidebarProps) {
             <div
                 ref={scrollContainerRef}
                 onScroll={handleScroll}
-                className="flex flex-col grow overflow-y-auto scroll-bar-hide py-2"
+                className="flex flex-col grow overflow-y-auto scroll-bar-hide py-2 gap-4"
             >
                 {isLoading ? (
                     <div className="flex justify-center py-10"><Loader /></div>
