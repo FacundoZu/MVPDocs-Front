@@ -31,7 +31,7 @@ export default function ChatMessageItem({ message }: ChatMessageItemProps) {
 
     return (
         // Añadimos 'group' para que el hover afecte a los elementos hijos
-        <div className={`flex w-full group ${isUser ? 'justify-end' : 'justify-start'} mb-4`}>
+        <div className={`flex w-full group ${isUser ? 'justify-end' : 'justify-start'}`}>
             <div className="max-w-[85%] flex flex-col gap-1">
 
                 {/* Burbuja de chat */}

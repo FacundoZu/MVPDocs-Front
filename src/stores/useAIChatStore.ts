@@ -1,42 +1,43 @@
 import { create } from 'zustand';
 
-// Reutilizamos tu interfaz de selección
 export interface SelectionPayload {
+    plainStart?: number;
+    plainEnd?: number;
     selectedText: string;
     contextBefore: string;
     contextAfter: string;
 }
 
 export type AIActionType = 'SUGGEST_TAGS' | 'SUGGEST_LITERATURE' | null;
+export type SidebarType = 'CHAT' | 'TAGS' | null; // Añadimos los tipos de sidebar
 
-interface AIChatStore {
-    // Estado
-    isSidebarOpen: boolean;
+interface AppSidebarStore {
+    activeSidebar: SidebarType;
     pendingAction: AIActionType;
-    actionPayload: SelectionPayload | null;
+    selectionPayload: SelectionPayload | null;
 
-    // Acciones
-    openSidebar: () => void;
+    openSidebar: (type: SidebarType) => void;
     closeSidebar: () => void;
+    setSelectionPayload: (payload: SelectionPayload | null) => void;
     triggerAIAction: (type: AIActionType, payload: SelectionPayload) => void;
     clearPendingAction: () => void;
 }
 
-export const useAIChatStore = create<AIChatStore>((set) => ({
-    isSidebarOpen: false,
+export const useAIChatStore = create<AppSidebarStore>((set) => ({
+    activeSidebar: null,
     pendingAction: null,
-    actionPayload: null,
+    selectionPayload: null,
 
-    openSidebar: () => set({ isSidebarOpen: true }),
-    closeSidebar: () => set({ isSidebarOpen: false }),
+    openSidebar: (type) => set({ activeSidebar: type }),
+    closeSidebar: () => set({ activeSidebar: null, selectionPayload: null }),
 
-    // Esta es la magia: abre el sidebar y le pasa la tarea al chat
+    setSelectionPayload: (payload) => set({ selectionPayload: payload }),
+
     triggerAIAction: (type, payload) => set({
-        isSidebarOpen: true,
+        activeSidebar: 'CHAT', // Abre el chat automáticamente
         pendingAction: type,
-        actionPayload: payload
+        selectionPayload: payload
     }),
 
-    // El chat llamará a esto una vez que empiece a procesar la solicitud
-    clearPendingAction: () => set({ pendingAction: null, actionPayload: null }),
+    clearPendingAction: () => set({ pendingAction: null }),
 }));
