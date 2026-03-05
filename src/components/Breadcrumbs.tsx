@@ -2,9 +2,10 @@ import { useParams, Link } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 import { projectApi } from '../API/projects';
 import { documentApi } from '../API/documents';
-import { BsDiagram3, BsLayoutSidebarReverse } from 'react-icons/bs';
+import { BsDiagram3 } from 'react-icons/bs';
 import { HiMiniSlash } from 'react-icons/hi2';
 import { useAIChatStore } from '../stores/useAIChatStore'; // 1. Importamos el store
+import { VscLayoutSidebarRight, VscLayoutSidebarRightOff } from 'react-icons/vsc';
 
 export default function Breadcrumbs() {
     const { projectId, documentId } = useParams();
@@ -72,13 +73,17 @@ export default function Breadcrumbs() {
                     // 3. Cambiamos Link por button y le pasamos el onClick
                     <button
                         onClick={toggleSidebar}
-                        className={`p-2 rounded-lg transition-colors duration-200 cursor-pointer border ${activeSidebar
-                            ? 'bg-indigo-50 border-indigo-200 text-indigo-600'
-                            : 'bg-white border-gray-300 text-gray-600 hover:bg-gray-50'
+                        className={`p-2 rounded-xl transition-colors duration-200 cursor-pointer hover:text-primary hover:bg-primary/20 ${activeSidebar
+                            ? 'bg-primary-50 text-primary'
+                            : 'bg-white text-gray-400'
                             }`}
                         title="Alternar panel lateral"
                     >
-                        <BsLayoutSidebarReverse size={20} />
+                        {activeSidebar ? (
+                            <VscLayoutSidebarRight size={20} />
+                        ) : (
+                            <VscLayoutSidebarRightOff size={20} />
+                        )}
                     </button>
                 )}
             </div>
