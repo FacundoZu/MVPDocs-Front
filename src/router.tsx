@@ -3,6 +3,7 @@ import { lazy, Suspense } from "react";
 import AppLayout from "./layouts/AppLayout";
 import { ProjectProvider } from "./context/ProjectContext";
 import { Toaster } from "sonner";
+import RecentNetworksView from "./views/RecentNetworkView";
 
 // Vistas con Lazy Loading
 const LandingPage = lazy(() => import("./views/LandingPage"));
@@ -20,6 +21,7 @@ export default function Router() {
                         <Route path="/" element={<LandingPage />} />
 
                         <Route path="/app" element={<AppLayout />}>
+                            <Route index element={<RecentNetworksView />} />
                             <Route path="projects/:projectId" element={<ProjectDocuments />} />
                             <Route path="projects/:projectId/documents/:documentId" element={<DocumentViewer />} />
                             <Route path="projects/:projectId/network/:networkId?" element={<NetworkView />} />

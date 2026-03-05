@@ -4,7 +4,7 @@ import { projectApi } from '../API/projects';
 import { documentApi } from '../API/documents';
 import { BsDiagram3 } from 'react-icons/bs';
 import { HiMiniSlash } from 'react-icons/hi2';
-import { useAIChatStore } from '../stores/useAIChatStore'; // 1. Importamos el store
+import { useAIChatStore } from '../stores/useAIChatStore'; 
 import { VscLayoutSidebarRight, VscLayoutSidebarRightOff } from 'react-icons/vsc';
 
 export default function Breadcrumbs() {
@@ -33,6 +33,7 @@ export default function Breadcrumbs() {
         enabled: !!documentId,
     });
 
+    
     if (!projectId) {
         return (
             <span className="text-sm text-gray-400 py-2">Selecciona un proyecto</span>
@@ -70,7 +71,6 @@ export default function Breadcrumbs() {
                     <span>Ver Red Semántica</span>
                 </Link>
                 {documentId && (
-                    // 3. Cambiamos Link por button y le pasamos el onClick
                     <button
                         onClick={toggleSidebar}
                         className={`p-2 rounded-xl transition-colors duration-200 cursor-pointer hover:text-primary hover:bg-primary/20 ${activeSidebar
