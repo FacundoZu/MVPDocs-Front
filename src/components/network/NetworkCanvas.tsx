@@ -67,7 +67,6 @@ export const NetworkCanvas = ({ networkId }: NetworkCanvasProps) => {
   }, [nodes, edges, viewport, debouncedSave]);
 
   useEffect(() => {
-    console.log("Cargando red con ID:", networkId); // 👈 Log 1
     if (networkId) {
       loadFromBackend(networkId);
     }
