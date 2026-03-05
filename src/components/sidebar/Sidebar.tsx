@@ -2,10 +2,11 @@ import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useProject } from '../../context/ProjectContext';
 import { projectApi } from '../../API/projects';
-import { FiFolder, FiFolderPlus, FiPlus, FiLoader } from 'react-icons/fi';
+import { FiFolder, FiFolderPlus, FiPlus, FiLoader, FiPlusCircle } from 'react-icons/fi';
 import ProjectItem from './ProjectItem';
 import type { ProjectWithDocs } from './ProjectItem';
 import NewProjectModal from './NewProjectModal';
+import { useNavigate } from 'react-router';
 
 export default function Sidebar() {
     const { addProject } = useProject();
@@ -20,10 +21,23 @@ export default function Sidebar() {
         await addProject(data);
         setShowModal(false);
     };
+    const navigate = useNavigate();
 
     return (
         <>
             <aside className="w-64 shrink-0 h-full bg-white border-r border-gray-200 flex flex-col">
+                <div className="px-4 py-4 border-b border-gray-200">
+                    <button 
+                    onClick={() => navigate('/app')}
+                    title="Ver todas las redes semánticas"
+                    className="w-full flex items-center gap-3 px-3 py-2 rounded-xl bg-gray-100 hover:bg-indigo-150 hover:text-indigo-600 transition-all duration-200shadow-sm hover:shadow-md cursor-pointer group ">
+                    <FiPlusCircle className="w-5 h-5 text-gray-500 group-hover:text-indigo-600 transition-colors" />
+
+                    <span className="text-sm font-semibold">
+                        Redes Semánticas
+                    </span>
+                    </button>
+                </div>
                 <div className="px-4 py-4 border-b border-gray-100 flex items-center justify-between">
                     <div className="flex items-center gap-2">
                         <FiFolderPlus className="w-5 h-5 text-gray-500" />
@@ -32,7 +46,7 @@ export default function Sidebar() {
                     <button
                         onClick={() => setShowModal(true)}
                         title="Nuevo proyecto"
-                        className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                        className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors cursor-pointer"
                     >
                         <FiPlus className="w-4 h-4" />
                     </button>

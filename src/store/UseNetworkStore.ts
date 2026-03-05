@@ -27,12 +27,30 @@ interface NetworkState {
   onNodesChange: OnNodesChange;
   onEdgesChange: OnEdgesChange;
   onConnect: (connection: Connection) => void;
-
+ 
   loadFromBackend: (networkId: string) => Promise<void>;
   saveNetwork: (networkId: string) => Promise<void>;
   applyAutoLayout: () => void;
 }
-
+    
+export const networkApi = {
+    // Obtener las redes más recientes de todos los proyectos
+    getRecent: async () => {
+        const { data } = await api.get('/networks/recent');
+        return data; 
+    },
+    // Obtener todas las redes de un proyecto específico
+    getByProject: async (projectId: string) => {
+        const { data } = await api.get(`/networks/project/${projectId}`);
+        return data;
+    },
+    // Eliminar una red
+    delete: async (id: string) => {
+        const { data } = await api.delete(`/networks/${id}`);
+        return data;
+    }
+};
+ 
 export const useNetworkStore = create<NetworkState>()((set, get) => ({
   nodes: [],
   edges: [],
