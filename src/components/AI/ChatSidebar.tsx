@@ -3,14 +3,13 @@ import { useParams } from "react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { IoClose, IoSend } from "react-icons/io5";
-import { BsStars } from "react-icons/bs";
+import { IoSend } from "react-icons/io5";
 import ReactMarkdown from "react-markdown";
 
 import Loader from "../ui/Loader";
 import { getMessages, sendMessage } from "../../API/CharAPI";
 import { generateIAMessageStream, suggestLiterature, suggestTags } from "../../API/AIAPI";
-import { useAIChatStore } from "../../stores/useAIChatStore"; // Importamos nuestro store
+import { useAIChatStore } from "../../stores/useAIChatStore";
 import ChatMessageItem from "./ChatMessageItem";
 
 interface ChatSidebarProps {
@@ -18,14 +17,7 @@ interface ChatSidebarProps {
 }
 
 export default function ChatSidebar({ context }: ChatSidebarProps) {
-    // 1. Conectamos con Zustand
-    const {
-        isSidebarOpen,
-        closeSidebar,
-        pendingAction,
-        actionPayload,
-        clearPendingAction
-    } = useAIChatStore();
+    const { pendingAction, selectionPayload, clearPendingAction } = useAIChatStore();
 
     const queryClient = useQueryClient();
     const { projectId, documentId } = useParams<{ projectId: string; documentId: string }>();
@@ -33,21 +25,28 @@ export default function ChatSidebar({ context }: ChatSidebarProps) {
     const [isStreaming, setIsStreaming] = useState(false);
     const [currentStreamText, setCurrentStreamText] = useState('');
 
-    const messagesEndRef = useRef<HTMLDivElement>(null);
+    const scrollContainerRef = useRef<HTMLDivElement>(null);
+    // NUEVO: Ref para saber si debemos scrollear automáticamente
+    const isAutoScrolling = useRef(true);
+
     const { register, handleSubmit, reset, watch } = useForm({ defaultValues: { content: '' } });
     const contentValue = watch("content");
 
-    const scrollToBottom = () => {
-        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    // NUEVO: Detecta si el usuario está scrolleando manualmente
+    const handleScroll = () => {
+        if (!scrollContainerRef.current) return;
+        const { scrollTop, scrollHeight, clientHeight } = scrollContainerRef.current;
+
+        // Consideramos que está "al fondo" si la distancia al final es menor a 50px
+        const isNearBottom = scrollHeight - scrollTop - clientHeight < 50;
+        isAutoScrolling.current = isNearBottom;
     };
 
     const { data, isLoading } = useQuery({
         queryKey: ['messages', projectId, documentId],
         queryFn: () => getMessages({ projectId: projectId!, documentId: documentId! }),
-        enabled: isSidebarOpen // Optimización: Solo carga mensajes si el sidebar está abierto
     });
 
-    // Cambiamos a mutateAsync para poder usar await dentro de nuestras funciones
     const { mutateAsync: saveMessage } = useMutation({
         mutationFn: sendMessage,
         onSuccess: () => {
@@ -55,12 +54,24 @@ export default function ChatSidebar({ context }: ChatSidebarProps) {
         }
     });
 
-    // 2. EXTRAEMOS LA LÓGICA CORE PARA HACERLA REUTILIZABLE
+    // NUEVO: Efecto de scroll inteligente y suavizado
+    useEffect(() => {
+        if (isAutoScrolling.current && scrollContainerRef.current) {
+            // requestAnimationFrame evita el "layout thrashing" (los saltos raros)
+            // sincronizando el scroll con el refresco de la pantalla.
+            requestAnimationFrame(() => {
+                if (scrollContainerRef.current) {
+                    scrollContainerRef.current.scrollTop = scrollContainerRef.current.scrollHeight;
+                }
+            });
+        }
+    }, [data, currentStreamText]);
+
     const handleSendMessage = async (userContent: string) => {
         if (!userContent.trim()) return;
+        isAutoScrolling.current = true; // Forzamos el scroll al enviar mensaje
 
         try {
-            // A. Guardar mensaje del usuario
             await saveMessage({
                 content: userContent,
                 role: 'user',
@@ -68,7 +79,6 @@ export default function ChatSidebar({ context }: ChatSidebarProps) {
                 documentId: documentId!
             });
 
-            // B. Iniciar generación de IA
             setIsStreaming(true);
             setCurrentStreamText('');
             let fullAIResponse = '';
@@ -84,7 +94,6 @@ export default function ChatSidebar({ context }: ChatSidebarProps) {
                 setCurrentStreamText(fullAIResponse);
             }
 
-            // C. Guardar respuesta de la IA
             await saveMessage({
                 content: fullAIResponse,
                 role: 'assistant',
@@ -100,50 +109,45 @@ export default function ChatSidebar({ context }: ChatSidebarProps) {
         }
     };
 
-    // 3. ENVÍO MANUAL (Desde el input)
     const onSubmitManual = async (formData: { content: string }) => {
         const content = formData.content;
-        reset(); // Limpiamos el input inmediatamente
+        reset();
         await handleSendMessage(content);
     };
 
-    // 4. INTERCEPTOR DE ACCIONES AUTOMÁTICAS (Zustand)
     useEffect(() => {
-        if (pendingAction && actionPayload) {
+        if (pendingAction && selectionPayload) {
             const executeAutoAction = async () => {
+                isAutoScrolling.current = true; // Forzamos el scroll al accionar la IA
                 try {
-                    // 2. Preparamos el UI para el stream
                     setIsStreaming(true);
                     setCurrentStreamText('');
                     let fullAIResponse = '';
                     let streamResponse;
 
-                    // 3. Elegimos la función correcta de la API
                     if (pendingAction === 'SUGGEST_TAGS') {
                         streamResponse = await suggestTags({
-                            selectedText: actionPayload.selectedText,
-                            contextBefore: actionPayload.contextBefore,
-                            contextAfter: actionPayload.contextAfter,
-                            existingTags: [] // Si tienes los tags en el store o props, pásalos aquí
+                            selectedText: selectionPayload.selectedText,
+                            contextBefore: selectionPayload.contextBefore,
+                            contextAfter: selectionPayload.contextAfter,
+                            existingTags: []
                         });
                     } else if (pendingAction === 'SUGGEST_LITERATURE') {
                         streamResponse = await suggestLiterature({
-                            selectedText: actionPayload.selectedText,
-                            contextBefore: actionPayload.contextBefore,
-                            contextAfter: actionPayload.contextAfter,
+                            selectedText: selectionPayload.selectedText,
+                            contextBefore: selectionPayload.contextBefore,
+                            contextAfter: selectionPayload.contextAfter,
                         });
                     }
 
-                    clearPendingAction(); // Limpiamos el estado de Zustand
+                    clearPendingAction();
 
-                    // 4. Procesamos el stream
                     if (streamResponse) {
                         for await (const chunk of streamResponse) {
                             fullAIResponse += chunk;
                             setCurrentStreamText(fullAIResponse);
                         }
 
-                        // 5. Guardamos la respuesta final de la IA
                         await saveMessage({
                             content: fullAIResponse,
                             role: 'assistant',
@@ -161,32 +165,17 @@ export default function ChatSidebar({ context }: ChatSidebarProps) {
 
             executeAutoAction();
         }
-    }, [pendingAction, actionPayload]);
-
-    useEffect(() => {
-        scrollToBottom();
-    }, [data, currentStreamText, isSidebarOpen]);
-
-    if (!isSidebarOpen) return null;
+    }, [pendingAction, selectionPayload]);
 
     return (
-        <div className="flex flex-col gap-6 bg-gray-50 border-l border-gray-200 p-6 min-h-full max-h-screen min-w-[380px] w-1/3 shadow-2xl z-20 transition-all duration-300 open-sidebar">
-            <div className="flex items-center justify-between">
-                <h2 className="text-xl font-bold flex items-center gap-3 text-slate-800">
-                    <div className="bg-indigo-100 text-indigo-600 p-2 rounded-xl flex items-center justify-center">
-                        <BsStars size={20} />
-                    </div>
-                    Analista IA
-                </h2>
-                <button
-                    onClick={closeSidebar}
-                    className="p-2 text-gray-400 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-colors cursor-pointer"
-                >
-                    <IoClose size={24} />
-                </button>
-            </div>
+        <div className="flex flex-col gap-6 bg-gray-50 border-l border-gray-200 p-6 min-h-full max-h-screen shadow-2xl z-20">
 
-            <div className="flex flex-col gap-4 grow overflow-y-auto scroll-bar-hide py-2">
+            {/* AÑADIDO: onScroll={handleScroll} */}
+            <div
+                ref={scrollContainerRef}
+                onScroll={handleScroll}
+                className="flex flex-col grow overflow-y-auto scroll-bar-hide py-2 gap-4"
+            >
                 {isLoading ? (
                     <div className="flex justify-center py-10"><Loader /></div>
                 ) : (
@@ -205,7 +194,7 @@ export default function ChatSidebar({ context }: ChatSidebarProps) {
                         </div>
                     </div>
                 )}
-                <div ref={messagesEndRef} />
+                <div />
             </div>
 
             <form

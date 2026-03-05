@@ -5,7 +5,7 @@ import { quoteApi, type CreateQuoteRequest2 } from '../API/quotes';
 import { FiLoader, FiAlertCircle } from 'react-icons/fi';
 import MarkdownWithHighlights from '../components/viewer/MarkdownWithHighlights';
 import { getTags } from '../API/TagAPI';
-import ChatSidebar from '../components/AI/ChatSidebar';
+import RightSidebarLayout from '../layouts/RightSidebarLayout';
 
 export default function DocumentViewer() {
     const { projectId, documentId } = useParams<{ projectId: string; documentId: string }>();
@@ -69,7 +69,7 @@ export default function DocumentViewer() {
 
     return (
         <div className="flex h-full overflow-hidden">
-            <div className="grow overflow-y-auto p-8 scroll-bar-hide">
+            <div className="grow overflow-y-auto p-8 scroll-bar-hide transition-all duration-300 ease-in-out">
                 <div className="max-w-3xl mx-auto">
                     <MarkdownWithHighlights
                         content={document.markdownContent}
@@ -81,7 +81,11 @@ export default function DocumentViewer() {
                 </div>
             </div>
 
-            <ChatSidebar context={document.markdownContent} />
+            <RightSidebarLayout
+                context={document.markdownContent}
+                projectId={projectId!}
+                tags={tags}
+            />
         </div>
     );
 }
