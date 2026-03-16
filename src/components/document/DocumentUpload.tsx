@@ -55,10 +55,9 @@ export default function DocumentUpload({ onUploadSuccess, projectId }: DocumentU
             await documentApi.upload(selectedFile, projectId);
             onUploadSuccess?.();
             setSelectedFile(null);
-        } catch (err: any) {
-            const errorMessage = err.response?.data?.error || err.message || 'Error al subir el archivo. Inténtalo de nuevo.';
+        } catch {
+            const errorMessage = 'Error al subir el archivo. Inténtalo de nuevo.';
             setError(errorMessage);
-            console.error('Upload error:', err);
         } finally {
             setIsUploading(false);
         }
@@ -136,7 +135,7 @@ export default function DocumentUpload({ onUploadSuccess, projectId }: DocumentU
                 ) : selectedFile ? (
                     <div className="py-4">
                         <div className="mb-4">
-                            <FiUploadCloud className="mx-auto h-12 w-12 text-green-500" />
+                            <FiUploadCloud className="mx-auto h-12 w-12 text-indigo-600" />
                         </div>
                         <div className="mb-4">
                             <p className="text-lg font-semibold text-gray-900 mb-1">

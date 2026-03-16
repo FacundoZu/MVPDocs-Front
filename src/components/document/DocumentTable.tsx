@@ -1,5 +1,6 @@
+import { useState, useEffect } from 'react';
 import { Card } from '../ui/Card';
-import { FaFilePdf, FaFileWord, FaFile, FaFileAlt, FaEye, FaTrash } from 'react-icons/fa';
+import { FaFilePdf, FaFileWord, FaFile, FaFileAlt, FaEye, FaTrash, FaEllipsisV } from 'react-icons/fa';
 import type { ProjectDocument } from '../../API/projects';
 
 interface DocumentTableProps {
@@ -13,6 +14,22 @@ export default function DocumentTable({
     onDocumentView,
     onDocumentDelete,
 }: DocumentTableProps) {
+    const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
+
+    useEffect(() => {
+        const handleClickOutside = () => {
+            setOpenDropdownId(null);
+        };
+        document.addEventListener('click', handleClickOutside);
+        return () => {
+            document.removeEventListener('click', handleClickOutside);
+        };
+    }, []);
+
+    const toggleDropdown = (e: React.MouseEvent, id: string) => {
+        e.stopPropagation();
+        setOpenDropdownId(openDropdownId === id ? null : id);
+    };
 
     // const formatFileSize = (bytes: number): string => {
     //     if (bytes === 0) return '0 Bytes';
@@ -86,7 +103,7 @@ export default function DocumentTable({
             </Card> */}
 
             <Card padding="none">
-                <div className="overflow-x-auto">
+                <div className="w-full overflow-visible">
                     <table className="w-full">
                         <thead className="bg-gray-50 border-b border-gray-200">
                             <tr>
@@ -103,7 +120,7 @@ export default function DocumentTable({
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
                             {documents.map((doc) => (
-                                <tr key={doc.id} className="hover:bg-gray-50 transition-colors">
+                                <tr key={doc.id} className="transition-colors">
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <button onClick={() => onDocumentView?.(doc)} className="flex items-center gap-3 cursor-pointer">
                                             <div className="shrink-0">{getFileIcon(doc.originalFormat)}</div>
@@ -116,7 +133,7 @@ export default function DocumentTable({
                                         {formatDate(doc.createdAt)}
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        <div className="flex gap-2 justify-end">
+                                        <div className="flex gap-2 justify-end items-center relative">
                                             {onDocumentView && (
                                                 <button
                                                     onClick={() => onDocumentView(doc)}
@@ -127,13 +144,32 @@ export default function DocumentTable({
                                                 </button>
                                             )}
                                             {onDocumentDelete && (
-                                                <button
-                                                    onClick={() => onDocumentDelete(doc.id)}
-                                                    className="p-2 text-gray-500 hover:text-gray-800 hover:bg-gray-50 rounded transition-colors duration-300 cursor-pointer"
-                                                    title="Eliminar documento"
-                                                >
-                                                    <FaTrash className="w-4 h-4" />
-                                                </button>
+                                                <div className='relative'>
+                                                    <button
+                                                        onClick={(e) => toggleDropdown(e, doc.id)}
+                                                        className="p-2 text-gray-500 hover:text-gray-800 hover:bg-gray-50 rounded transition-colors duration-300 cursor-pointer"
+                                                        title="Opciones"
+                                                    >
+                                                        <FaEllipsisV className="w-4 h-4" />
+                                                    </button>
+
+                                                    {openDropdownId === doc.id && (
+                                                        <div className={`absolute right-0 top-full mb-1 w-48 bg-white rounded-md shadow-lg z-50 border border-gray-200`} onClick={(e) => e.stopPropagation()}>
+                                                            <div className="py-1">
+                                                                <button
+                                                                    onClick={() => {
+                                                                        onDocumentDelete(doc.id);
+                                                                        setOpenDropdownId(null);
+                                                                    }}
+                                                                    className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2 cursor-pointer transition-colors duration-300"
+                                                                >
+                                                                    <FaTrash className="w-4 h-4" />
+                                                                    Eliminar
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    )}
+                                                </div>
                                             )}
                                         </div>
                                     </td>
