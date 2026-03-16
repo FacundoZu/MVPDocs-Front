@@ -1,9 +1,17 @@
 import api from '../lib/axios';
 
+export interface ProjectDocument {
+    id: string;
+    title: string;
+    originalFormat: string;
+    createdAt: string;
+}
+
 export interface Project {
     _id: string;
     name: string;
     description?: string;
+    documents: ProjectDocument[];
     createdAt: string;
     updatedAt: string;
 }
@@ -27,6 +35,7 @@ export const projectApi = {
 
     getById: async (id: string): Promise<Project> => {
         const response = await api.get<Project>(`/projects/${id}`);
+        console.log(response.data);
         return response.data;
     },
 };

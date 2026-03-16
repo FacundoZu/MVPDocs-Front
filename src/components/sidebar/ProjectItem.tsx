@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
 import { FiFolder, FiChevronDown, FiChevronRight } from 'react-icons/fi';
 import DocumentItem from './DocumentItem';
+import type { ProjectDocument } from '../../API/projects';
 
 // Tipo extendido que incluye los documentos embebidos que devuelve GET /projects
 export interface ProjectWithDocs {
@@ -10,7 +11,7 @@ export interface ProjectWithDocs {
     description?: string;
     createdAt: string;
     updatedAt: string;
-    documents: { id: string; title: string }[];
+    documents: ProjectDocument[];
 }
 
 interface ProjectItemProps {

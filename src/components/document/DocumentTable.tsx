@@ -1,20 +1,10 @@
-import { useState, useMemo } from 'react';
 import { Card } from '../ui/Card';
-import Input from '../ui/Input';
-import Button from '../ui/Button';
-import { FaFilePdf, FaFileWord, FaFile, FaFileAlt, FaEye, FaTrash, FaSearch, FaSortAmountDown, FaSortAmountUp } from 'react-icons/fa';
-
-interface Document {
-    id: string;
-    name: string;
-    size: number;
-    uploadedAt: Date;
-    type: string;
-}
+import { FaFilePdf, FaFileWord, FaFile, FaFileAlt, FaEye, FaTrash } from 'react-icons/fa';
+import type { ProjectDocument } from '../../API/projects';
 
 interface DocumentTableProps {
-    documents: Document[];
-    onDocumentView?: (document: Document) => void;
+    documents: ProjectDocument[];
+    onDocumentView?: (document: ProjectDocument) => void;
     onDocumentDelete?: (documentId: string) => void;
 }
 
@@ -23,27 +13,23 @@ export default function DocumentTable({
     onDocumentView,
     onDocumentDelete,
 }: DocumentTableProps) {
-    const [searchTerm, setSearchTerm] = useState('');
-    const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
-    const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 10;
 
-    const formatFileSize = (bytes: number): string => {
-        if (bytes === 0) return '0 Bytes';
-        const k = 1024;
-        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
-    };
+    // const formatFileSize = (bytes: number): string => {
+    //     if (bytes === 0) return '0 Bytes';
+    //     const k = 1024;
+    //     const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    //     const i = Math.floor(Math.log(bytes) / Math.log(k));
+    //     return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
+    // };
 
-    const formatDate = (date: Date): string => {
-        return new Intl.DateTimeFormat('es-ES', {
+    const formatDate = (date: string): string => {
+        return new Date(date).toLocaleDateString('es-ES', {
             day: '2-digit',
             month: 'short',
             year: 'numeric',
             hour: '2-digit',
             minute: '2-digit',
-        }).format(date);
+        });
     };
 
     const getFileIcon = (type: string) => {
@@ -57,33 +43,6 @@ export default function DocumentTable({
             return <FaFileAlt className="w-5 h-5 text-gray-500" />;
         }
         return <FaFile className="w-5 h-5 text-gray-500" />;
-    };
-
-    const filteredAndSortedDocuments = useMemo(() => {
-        const filtered = documents.filter((doc) =>
-            doc.name?.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-
-        filtered.sort((a, b) => {
-            const dateA = new Date(a.uploadedAt).getTime();
-            const dateB = new Date(b.uploadedAt).getTime();
-            return sortOrder === 'desc' ? dateB - dateA : dateA - dateB;
-        });
-
-        return filtered;
-    }, [documents, searchTerm, sortOrder]);
-
-    const totalPages = Math.ceil(filteredAndSortedDocuments.length / itemsPerPage);
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    const currentDocuments = filteredAndSortedDocuments.slice(startIndex, endIndex);
-
-    const handlePageChange = (page: number) => {
-        setCurrentPage(page);
-    };
-
-    const toggleSortOrder = () => {
-        setSortOrder((prev) => (prev === 'desc' ? 'asc' : 'desc'));
     };
 
     if (documents.length === 0) {
@@ -102,7 +61,7 @@ export default function DocumentTable({
 
     return (
         <div className="space-y-4">
-            <Card padding="sm">
+            {/* <Card padding="sm">
                 <div className="flex gap-3 items-center">
                     <div className="flex-1">
                         <Input
@@ -124,7 +83,7 @@ export default function DocumentTable({
                         {sortOrder === 'desc' ? 'Más recientes' : 'Más antiguos'}
                     </Button>
                 </div>
-            </Card>
+            </Card> */}
 
             <Card padding="none">
                 <div className="overflow-x-auto">
@@ -137,37 +96,31 @@ export default function DocumentTable({
                                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Fecha de subida
                                 </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Tamaño
-                                </th>
                                 <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Acciones
                                 </th>
                             </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
-                            {currentDocuments.map((doc) => (
+                            {documents.map((doc) => (
                                 <tr key={doc.id} className="hover:bg-gray-50 transition-colors">
                                     <td className="px-6 py-4 whitespace-nowrap">
-                                        <button onClick={() => onDocumentView?.(doc)} className="flex items-center gap-3">
-                                            <div className="shrink-0">{getFileIcon(doc.type)}</div>
+                                        <button onClick={() => onDocumentView?.(doc)} className="flex items-center gap-3 cursor-pointer">
+                                            <div className="shrink-0">{getFileIcon(doc.originalFormat)}</div>
                                             <div className="text-sm font-medium text-gray-900 truncate max-w-md">
-                                                {doc.name}
+                                                {doc.title}
                                             </div>
                                         </button>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        {formatDate(doc.uploadedAt)}
-                                    </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        {formatFileSize(doc.size)}
+                                        {formatDate(doc.createdAt)}
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                         <div className="flex gap-2 justify-end">
                                             {onDocumentView && (
                                                 <button
                                                     onClick={() => onDocumentView(doc)}
-                                                    className="p-2 text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded transition-colors"
+                                                    className="p-2 text-gray-500 hover:text-gray-800 hover:bg-gray-50 rounded transition-colors duration-300 cursor-pointer"
                                                     title="Ver documento"
                                                 >
                                                     <FaEye className="w-4 h-4" />
@@ -176,7 +129,7 @@ export default function DocumentTable({
                                             {onDocumentDelete && (
                                                 <button
                                                     onClick={() => onDocumentDelete(doc.id)}
-                                                    className="p-2 text-red-600 hover:text-red-800 hover:bg-red-50 rounded transition-colors"
+                                                    className="p-2 text-gray-500 hover:text-gray-800 hover:bg-gray-50 rounded transition-colors duration-300 cursor-pointer"
                                                     title="Eliminar documento"
                                                 >
                                                     <FaTrash className="w-4 h-4" />
@@ -189,43 +142,6 @@ export default function DocumentTable({
                         </tbody>
                     </table>
                 </div>
-
-                {totalPages > 1 && (
-                    <div className="px-6 py-4 border-t border-gray-200 flex items-center justify-between">
-                        <div className="text-sm text-gray-500">
-                            Mostrando {startIndex + 1} - {Math.min(endIndex, filteredAndSortedDocuments.length)} de{' '}
-                            {filteredAndSortedDocuments.length} documentos
-                        </div>
-                        <div className="flex gap-2">
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => handlePageChange(currentPage - 1)}
-                                disabled={currentPage === 1}
-                            >
-                                Anterior
-                            </Button>
-                            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                                <Button
-                                    key={page}
-                                    variant={currentPage === page ? 'primary' : 'outline'}
-                                    size="sm"
-                                    onClick={() => handlePageChange(page)}
-                                >
-                                    {page}
-                                </Button>
-                            ))}
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => handlePageChange(currentPage + 1)}
-                                disabled={currentPage === totalPages}
-                            >
-                                Siguiente
-                            </Button>
-                        </div>
-                    </div>
-                )}
             </Card>
         </div>
     );
