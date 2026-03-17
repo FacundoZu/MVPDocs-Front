@@ -8,6 +8,7 @@ export interface Tab {
     path: string;
     title: string;
     type: TabType;
+    secondaryDocumentId?: string; // Nuevo campo para persistir en split view
 }
 
 interface TabsState {

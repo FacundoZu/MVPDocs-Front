@@ -77,6 +77,7 @@ interface HighlightRect {
 interface TagMarker {
     quoteId: string;
     top: number;
+    left: number;
     color: string;
     name: string;
 }
@@ -93,9 +94,27 @@ export default function MarkdownWithHighlights({
     const [selection, setSelection] = useState<SelectionState | null>(null);
     const [highlightRects, setHighlightRects] = useState<HighlightRect[]>([]);
     const [tagMarkers, setTagMarkers] = useState<TagMarker[]>([]);
+    const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
 
     // Instanciamos la función de Zustand
     const triggerAIAction = useAIChatStore((state) => state.triggerAIAction);
+
+    useEffect(() => {
+        const wrapper = wrapperRef.current;
+        if (!wrapper) return;
+
+        const observer = new ResizeObserver((entries) => {
+            if (entries[0]) {
+                setDimensions({
+                    width: entries[0].contentRect.width,
+                    height: entries[0].contentRect.height,
+                });
+            }
+        });
+
+        observer.observe(wrapper);
+        return () => observer.disconnect();
+    }, []);
 
     // Recalcular los rects de highlight cuando cambian los quotes o el contenido
     useEffect(() => {
@@ -166,6 +185,7 @@ export default function MarkdownWithHighlights({
         setHighlightRects(rects);
 
         // Calcular un punto de anclaje por quote para el badge de tag en el margen
+        const containerLeft = container.offsetWidth + 16;
         const markers: TagMarker[] = [];
         for (const quote of quotes) {
             const start = findNodeAtOffset(container, quote.position.plainStart);
@@ -182,6 +202,7 @@ export default function MarkdownWithHighlights({
                 markers.push({
                     quoteId: quote._id,
                     top: firstRect.top - wrapperRect.top + wrapper.scrollTop,
+                    left: containerLeft,
                     color: quote.color,
                     name: populatedTag?.name ?? '',
                 });
@@ -197,7 +218,7 @@ export default function MarkdownWithHighlights({
             }
         }
         setTagMarkers(markers);
-    }, [quotes, content, selection, selectedQuote, tags]);
+    }, [quotes, content, selection, selectedQuote, tags, dimensions]);
 
     const handleMouseUp = useCallback(() => {
         const sel = window.getSelection();
@@ -305,9 +326,7 @@ export default function MarkdownWithHighlights({
                     style={{
                         position: 'absolute',
                         top: marker.top,
-                        left: containerRef.current
-                            ? containerRef.current.offsetWidth + 16
-                            : '100%',
+                        left: marker.left,
                         backgroundColor: marker.color + '20',
                         borderLeft: `3px solid ${marker.color}`,
                         color: marker.color,
