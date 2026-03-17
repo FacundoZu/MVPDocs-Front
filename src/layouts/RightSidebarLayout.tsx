@@ -2,26 +2,18 @@ import { useState } from 'react';
 import { IoClose } from 'react-icons/io5';
 import { useAIChatStore } from '../stores/useAIChatStore';
 import ChatSidebar from '../components/AI/ChatSidebar';
-import { TagManager } from '../components/tags/TagManager';
-import type { Tag } from '../types/tagTypes';
 
 interface RightSidebarLayoutProps {
     context: string;
-    projectId: string;
-    tags: Tag[];
 }
 
-export default function RightSidebarLayout({ context, projectId, tags }: RightSidebarLayoutProps) {
+export default function RightSidebarLayout({ context }: RightSidebarLayoutProps) {
     const { activeSidebar, openSidebar, closeSidebar } = useAIChatStore();
 
     // TRUCO: Estado local para recordar la última pestaña abierta.
     // Así, cuando activeSidebar pasa a ser null (cerrando), el contenido 
     // no se borra de golpe y podemos ver cómo se desliza hacia afuera.
-    const [activeTab, setActiveTab] = useState<'CHAT' | 'TAGS'>('CHAT');
-
-    if (activeSidebar && activeSidebar !== activeTab) {
-        setActiveTab(activeSidebar);
-    }
+    const [activeTab] = useState<'CHAT'>('CHAT');
 
     return (
         <aside
@@ -49,21 +41,13 @@ export default function RightSidebarLayout({ context, projectId, tags }: RightSi
                         </button>
                     </div>
 
-                    {/* Segmented Control */}
+                    {/* Solo Chat IA */}
                     <div className="flex bg-gray-100 rounded-lg p-2">
                         <button
                             onClick={() => openSidebar('CHAT')}
-                            className={`flex-1 py-1.5 text-sm font-medium rounded-md transition-all cursor-pointer ${activeTab === 'CHAT' ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'
-                                }`}
+                            className="flex-1 py-1.5 text-sm font-medium rounded-md transition-all cursor-pointer bg-white text-indigo-600 shadow-sm"
                         >
                             Chat IA
-                        </button>
-                        <button
-                            onClick={() => openSidebar('TAGS')}
-                            className={`flex-1 py-1.5 text-sm font-medium rounded-md transition-all cursor-pointer ${activeTab === 'TAGS' ? 'bg-white text-indigo-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'
-                                }`}
-                        >
-                            Códigos
                         </button>
                     </div>
                 </div>
@@ -72,7 +56,6 @@ export default function RightSidebarLayout({ context, projectId, tags }: RightSi
                 <div className="grow flex flex-col overflow-hidden relative">
                     {/* Renderizamos basados en nuestra memoria local (activeTab) en lugar del global (activeSidebar) */}
                     {activeTab === 'CHAT' && <ChatSidebar context={context} />}
-                    {activeTab === 'TAGS' && <TagManager projectId={projectId} tags={tags} />}
                 </div>
             </div>
         </aside>

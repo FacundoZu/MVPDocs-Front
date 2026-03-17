@@ -9,13 +9,14 @@ interface QuotePopoverProps {
     tags: Tag[];
     onClose: () => void;
     onSelectTag: (tag: Tag) => void;
-    onTriggerAI: (actionType: 'SUGGEST_TAGS' | 'SUGGEST_LITERATURE') => void; // Nueva prop simplificada
+    onCreateNewTag: () => void;   // abre el TagsDrawer con el formulario
+    onTriggerAI: (actionType: 'SUGGEST_TAGS' | 'SUGGEST_LITERATURE') => void;
 }
 
-export default function QuotePopover({ x, y, yTop, tags, onSelectTag, onClose, onTriggerAI }: QuotePopoverProps) {
+export default function QuotePopover({ x, y, yTop, tags, onSelectTag, onClose, onCreateNewTag, onTriggerAI }: QuotePopoverProps) {
     const ref = useRef<HTMLDivElement>(null);
     const [showTags, setShowTags] = useState(false);
-    const [, setTop] = useState(y + 8);
+    const [top, setTop] = useState(y + 8);
 
     // Flip hacia arriba si el popover se sale de la pantalla por abajo
     useLayoutEffect(() => {
@@ -26,7 +27,7 @@ export default function QuotePopover({ x, y, yTop, tags, onSelectTag, onClose, o
         } else {
             setTop(y + 8);
         }
-    }, [y, yTop, showTags]); // recalcular también cuando cambia el tamaño del popover
+    }, [y, yTop, showTags]);
 
     useEffect(() => {
         const handleClick = (e: MouseEvent) => {
@@ -39,7 +40,7 @@ export default function QuotePopover({ x, y, yTop, tags, onSelectTag, onClose, o
     return (
         <div
             ref={ref}
-            style={{ top: y + 8, left: x }}
+            style={{ top, left: x }}
             className="fixed z-30 flex items-center justify-center bg-white rounded-2xl shadow-xl border border-gray-200 animate-in fade-in zoom-in-95 duration-200 text-sm font-semibold"
         >
             {!showTags && (
@@ -81,10 +82,13 @@ export default function QuotePopover({ x, y, yTop, tags, onSelectTag, onClose, o
                                 <LuChevronLeft className="w-4 h-4 text-primary" />
                             </button>
                             <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
-                                Elege un código
+                                Elegir código
                             </span>
                         </div>
+                        {/* Botón "+" abre el drawer con el formulario */}
                         <button
+                            onClick={() => { onCreateNewTag(); onClose(); }}
+                            title="Crear nuevo código"
                             className="cursor-pointer rounded-xl px-2 py-2 hover:bg-primary/10 transition-colors duration-200"
                         >
                             <LuPlus className="text-primary w-4 h-4" />
@@ -93,11 +97,19 @@ export default function QuotePopover({ x, y, yTop, tags, onSelectTag, onClose, o
 
                     <hr className="border-gray-100" />
 
-                    <div className="py-1.5 max-h-52 overflow-y-auto">
+                    <div className="py-1.5 max-h-52 overflow-y-auto min-w-40">
                         {tags.length === 0 ? (
-                            <p className="text-xs text-gray-400 italic text-center py-4 px-3">
-                                No hay códigos en este proyecto
-                            </p>
+                            <div className="text-center py-4 px-3">
+                                <p className="text-xs text-gray-400 italic mb-2">
+                                    No hay códigos aún
+                                </p>
+                                <button
+                                    onClick={() => { onCreateNewTag(); onClose(); }}
+                                    className="text-xs text-primary hover:underline font-medium"
+                                >
+                                    Crear el primero
+                                </button>
+                            </div>
                         ) : (
                             tags.map((tag) => (
                                 <button
@@ -119,7 +131,6 @@ export default function QuotePopover({ x, y, yTop, tags, onSelectTag, onClose, o
                     </div>
                 </div>
             )}
-
         </div>
     );
 }

@@ -93,8 +93,8 @@ export default function DemoAnimation() {
                 ))}
             </div>
 
-            <div className="flex gap-3 rounded-2xl overflow-hidden shadow-2xl backdrop-blur-sm border border-primary/10">
-                <div className="flex-1 p-6 text-sm leading-7 min-h-[180px]">
+            <div className="flex gap-3 rounded-2xl overflow-hidden shadow-xl border border-gray-200 bg-white">
+                <div className="flex-1 p-6 text-sm leading-7 min-h-[180px] text-gray-800">
                     {current.lines.map((line, i) => {
                         if (line.type === 'space') return <div key={i} className="h-3" />;
                         if (line.type === 'heading') return (
@@ -125,19 +125,19 @@ export default function DemoAnimation() {
                     })}
                 </div>
 
-                <div className="w-56 border-l border-white/10 p-4">
-                    <p className="text-xs font-semibold uppercase tracking-wide mb-3">Tags</p>
+                <div className="w-56 border-l border-gray-100 p-4 bg-gray-50">
+                    <p className="text-xs font-semibold uppercase tracking-wide mb-3 text-gray-400">Tags</p>
                     <div className="space-y-2">
                         {TAGS.map((tag, i) => (
                             <div
                                 key={i}
-                                className={`bg-white pl-4 pr-2 py-2 rounded-lg flex items-center justify-between w-full border border-gray-200 cursor-default ${tagVisible && i === 0 ? 'bg-gray-200' : ''
+                                className={`pl-4 pr-2 py-2 rounded-lg flex items-center gap-2 w-full border border-gray-200 cursor-default bg-white ${tagVisible && i === 0 ? 'bg-primary/5 border-primary/20' : ''
                                     }`}
                             >
                                 <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: tag.color }} />
-                                <span className="text-xs flex-1 truncate">{tag.name}</span>
+                                <span className="text-xs flex-1 truncate text-gray-700">{tag.name}</span>
                                 {tagVisible && i === 0 && (
-                                    <span className="text-xs animate-pulse">{tag.count}</span>
+                                    <span className="text-xs animate-pulse text-gray-400">{tag.count}</span>
                                 )}
                             </div>
                         ))}

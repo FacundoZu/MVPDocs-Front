@@ -6,10 +6,12 @@ import { FiLoader, FiAlertCircle } from 'react-icons/fi';
 import MarkdownWithHighlights from '../components/viewer/MarkdownWithHighlights';
 import { getTags } from '../API/TagAPI';
 import RightSidebarLayout from '../layouts/RightSidebarLayout';
+import { useLayout } from '../context/LayoutContext';
 
 export default function DocumentViewer() {
     const { projectId, documentId } = useParams<{ projectId: string; documentId: string }>();
     const queryClient = useQueryClient();
+    const { openTagsDrawer } = useLayout();
 
     const { data: document, isLoading: isLoadingDoc, error } = useQuery({
         queryKey: ['document', documentId],
@@ -77,14 +79,13 @@ export default function DocumentViewer() {
                         tags={tags}
                         onSelectQuote={handleCreateQuote}
                         selectedQuote={null}
+                        onCreateNewTag={() => openTagsDrawer(projectId!, document.title, true)}
                     />
                 </div>
             </div>
 
             <RightSidebarLayout
                 context={document.markdownContent}
-                projectId={projectId!}
-                tags={tags}
             />
         </div>
     );

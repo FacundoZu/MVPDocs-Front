@@ -4,18 +4,16 @@ export const TagList: React.FC<{ tags: Tag[] }> = ({ tags }) => {
     // ... (El bloque de "No hay tags aún" queda igual)
 
     return (
-        <div className="space-y-3 text-sm">
+        <div className="text-sm">
             {tags.map(tag => (
-                <div key={tag._id} className="bg-white pl-4 pr-3 py-3 rounded-xl flex items-center justify-between w-full border border-gray-100 shadow-sm">
-                    <div className="flex items-center gap-3">
-                        <div className="size-3.5 rounded-full shrink-0 shadow-sm" style={{ backgroundColor: tag.color }} />
-                        <p className="text-gray-700 font-medium line-clamp-1">{tag.name}</p>
+                <div key={tag._id} className="pl-4 pr-3 py-2 rounded-xl flex items-center gap-2 w-full overflow-hidden">
+                    <div className="flex items-center gap-2.5 min-w-0 flex-1">
+                        <div className="size-3 rounded-full shrink-0 shadow-sm" style={{ backgroundColor: tag.color }} />
+                        <p className="text-gray-700 font-medium truncate">{tag.name}</p>
                     </div>
-                    <div className="flex items-center gap-2">
-                        <span className="px-2 py-0.5 rounded-full bg-gray-50 text-gray-500 text-xs font-bold border border-gray-100">
-                            {tag.usageCount}
-                        </span>
-                    </div>
+                    <span className="px-1.5 py-0.5 text-gray-400 text-xs font-semibold shrink-0 tabular-nums">
+                        {tag.usageCount}
+                    </span>
                 </div>
             ))}
         </div>
