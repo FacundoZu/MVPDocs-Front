@@ -33,16 +33,6 @@ export default function ProjectDocuments() {
             <div className="flex flex-col h-full bg-gray-50 p-8">
                 <div className="max-w-6xl mx-auto w-full space-y-6">
                     <div>
-                        <DocumentUpload
-                            projectId={projectId!}
-                            onUploadSuccess={() => {
-                                queryClient.invalidateQueries({ queryKey: ['project', projectId] });
-                                queryClient.invalidateQueries({ queryKey: ['projects'] });
-                            }}
-                        />
-                    </div>
-
-                    <div>
                         <h2 className="text-xl font-semibold text-gray-900 mb-4">
                             Documentos del proyecto <span className="text-xs text-gray-400 ml-2 font-semibold">{project.documents.length} archivo/s</span>
                             {isLoading && <span className="text-sm font-normal text-gray-400 ml-2">Cargando...</span>}
@@ -51,6 +41,16 @@ export default function ProjectDocuments() {
                             documents={project.documents}
                             onDocumentView={(doc) => navigate(`/app/projects/${projectId}/documents/${doc.id}`)}
                             onDocumentDelete={(id) => deleteMutation.mutate(id)}
+                        />
+                    </div>
+
+                    <div>
+                        <DocumentUpload
+                            projectId={projectId!}
+                            onUploadSuccess={() => {
+                                queryClient.invalidateQueries({ queryKey: ['project', projectId] });
+                                queryClient.invalidateQueries({ queryKey: ['projects'] });
+                            }}
                         />
                     </div>
 
