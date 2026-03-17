@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
-import { FiFolder, FiChevronDown, FiChevronRight } from 'react-icons/fi';
+import { FiFolder, FiChevronDown, FiChevronRight, FiChevronLeft, FiTag } from 'react-icons/fi';
 import DocumentItem from './DocumentItem';
 
 // Tipo extendido que incluye los documentos embebidos que devuelve GET /projects
@@ -15,9 +15,11 @@ export interface ProjectWithDocs {
 
 interface ProjectItemProps {
     project: ProjectWithDocs;
+    onOpenTags: (projectId: string, projectName: string) => void;
+    tagsOpen: boolean; // si el drawer de tags está abierto para este proyecto
 }
 
-export default function ProjectItem({ project }: ProjectItemProps) {
+export default function ProjectItem({ project, onOpenTags, tagsOpen }: ProjectItemProps) {
     const navigate = useNavigate();
     const { projectId: activeProjectId } = useParams();
     const [isOpen, setIsOpen] = useState(activeProjectId === project._id);
@@ -51,6 +53,26 @@ export default function ProjectItem({ project }: ProjectItemProps) {
 
             {isOpen && (
                 <div className="ml-5 mt-0.5 space-y-0.5 border-l border-gray-100 pl-2">
+                    <button
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            onOpenTags(project._id, project.name);
+                        }}
+                        title="Ver códigos del proyecto"
+                        className={`w-full flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs transition-colors mt-1 ${tagsOpen
+                            ? 'text-primary bg-primary/10 font-medium'
+                            : 'text-gray-400 hover:text-primary hover:bg-primary/10'
+                            }`}
+                    >
+                        <FiTag className="w-3 h-3 shrink-0" />
+                        <span>Ver códigos</span>
+                        <span className="ml-auto">
+                            {tagsOpen
+                                ? <FiChevronLeft className="w-3 h-3" />
+                                : <FiChevronRight className="w-3 h-3" />}
+                        </span>
+                    </button>
+
                     {project.documents.length === 0 ? (
                         <p className="text-xs text-gray-400 px-3 py-1.5 italic">Sin documentos aún</p>
                     ) : (

@@ -1,12 +1,23 @@
 import { Link, Outlet } from "react-router";
 import Breadcrumbs from "../components/Breadcrumbs";
 import Sidebar from "../components/sidebar/Sidebar";
+import TagsDrawer from "../components/sidebar/TagsDrawer";
 import { FiZap } from "react-icons/fi";
 import { VscLayoutSidebarLeftOff, VscLayoutSidebarLeft } from "react-icons/vsc";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 export default function AppLayout() {
     const [sidebarOpen, setSidebarOpen] = useState(true);
+    const [tagsDrawer, setTagsDrawer] = useState<{ projectId: string; projectName: string } | null>(null);
+    // Mantiene el último valor visible durante la animación de cierre
+    const lastDrawer = useRef(tagsDrawer);
+    if (tagsDrawer) lastDrawer.current = tagsDrawer;
+
+    const handleOpenTags = (projectId: string, projectName: string) => {
+        setTagsDrawer(prev =>
+            prev?.projectId === projectId ? null : { projectId, projectName }
+        );
+    };
 
     return (
         <div className="flex flex-col h-screen bg-gray-50">
@@ -28,13 +39,31 @@ export default function AppLayout() {
                 <Breadcrumbs />
             </header>
 
-            <div className="flex flex-1 overflow-hidden">
+            <div className="relative flex flex-1 overflow-hidden">
                 <div
                     className="shrink-0 overflow-hidden transition-all duration-300 ease-in-out"
                     style={{ width: sidebarOpen ? 256 : 0 }}
                 >
-                    <Sidebar />
+                    <Sidebar onOpenTags={handleOpenTags} tagsProjectId={tagsDrawer?.projectId ?? null} />
                 </div>
+
+                {/* Drawer de tags — siempre montado, animado por width */}
+                <div
+                    className="absolute top-0 bottom-0 z-20 overflow-hidden transition-all duration-300 ease-in-out"
+                    style={{
+                        left: sidebarOpen ? 256 : 0,
+                        width: tagsDrawer ? 224 : 0,
+                    }}
+                >
+                    {lastDrawer.current && (
+                        <TagsDrawer
+                            projectId={lastDrawer.current.projectId}
+                            projectName={lastDrawer.current.projectName}
+                            onClose={() => setTagsDrawer(null)}
+                        />
+                    )}
+                </div>
+
                 <main className="flex-1 overflow-y-auto">
                     <Outlet />
                 </main>
