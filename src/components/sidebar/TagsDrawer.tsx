@@ -10,18 +10,18 @@ import { TagList } from '../tags/TagList';
 interface TagsDrawerProps {
     projectId: string;
     projectName: string;
-    showForm?: boolean;   // si es true, abre el formulario de creación automáticamente
+    formTrigger?: number;  // se incrementa cada vez que se quiere abrir el form
     onClose: () => void;
 }
 
-export default function TagsDrawer({ projectId, projectName, showForm = false, onClose }: TagsDrawerProps) {
+export default function TagsDrawer({ projectId, projectName, formTrigger = 0, onClose }: TagsDrawerProps) {
     const [search, setSearch] = useState('');
-    const [isModalOpen, setIsModalOpen] = useState(showForm);
+    const [isModalOpen, setIsModalOpen] = useState(formTrigger > 0);
 
-    // Si cambia showForm (desde el QuotePopover), reflejar en estado local
+    // Abre el formulario cada vez que formTrigger incrementa (incluso si ya era > 0)
     useEffect(() => {
-        if (showForm) setIsModalOpen(true);
-    }, [showForm]);
+        if (formTrigger > 0) setIsModalOpen(true);
+    }, [formTrigger]);
 
     const { data: tags = [], isLoading } = useQuery({
         queryKey: ['tags', projectId],

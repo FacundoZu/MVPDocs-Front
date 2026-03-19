@@ -4,6 +4,7 @@ import { quoteApi, type CreateQuoteRequest2 } from '../../API/quotes';
 import { FiLoader, FiAlertCircle, FiX } from 'react-icons/fi';
 import MarkdownWithHighlights from './MarkdownWithHighlights';
 import type { Tag } from '../../types/tagTypes';
+import { useLayout } from '../../context/LayoutContext';
 
 export default function SecondaryDocumentReader({ 
     documentId, 
@@ -15,6 +16,7 @@ export default function SecondaryDocumentReader({
     onClose: () => void;
 }) {
     const queryClient = useQueryClient();
+    const { openTagsDrawer } = useLayout();
 
     const { data: document, isLoading, error } = useQuery({
         queryKey: ['document', documentId],
@@ -90,6 +92,7 @@ export default function SecondaryDocumentReader({
                     tags={tags}
                     onSelectQuote={handleCreateQuote}
                     selectedQuote={null}
+                    onCreateNewTag={() => openTagsDrawer(document.projectId, document.title, true)}
                 />
             </div>
         </div>

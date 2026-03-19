@@ -10,7 +10,7 @@ import { LayoutContext } from "../context/LayoutContext";
 interface DrawerState {
     projectId: string;
     projectName: string;
-    showForm: boolean;
+    formTrigger: number;  // se incrementa cada vez que se quiere abrir el form
 }
 
 export default function AppLayout() {
@@ -23,9 +23,13 @@ export default function AppLayout() {
 
     const handleOpenTags = (projectId: string, projectName: string, showForm = false) => {
         setTagsDrawer(prev => {
-            // Toggle si mismo proyecto (sin showForm)
             if (!showForm && prev?.projectId === projectId) return null;
-            return { projectId, projectName, showForm };
+            return {
+                projectId,
+                projectName,
+                // Si showForm, siempre incrementamos el trigger para forzar el useEffect
+                formTrigger: showForm ? (prev?.formTrigger ?? 0) + 1 : 0,
+            };
         });
     };
 
@@ -75,7 +79,7 @@ export default function AppLayout() {
                             <TagsDrawer
                                 projectId={lastDrawer.current.projectId}
                                 projectName={lastDrawer.current.projectName}
-                                showForm={lastDrawer.current.showForm}
+                                formTrigger={lastDrawer.current.formTrigger}
                                 onClose={() => setTagsDrawer(null)}
                             />
                         )}
