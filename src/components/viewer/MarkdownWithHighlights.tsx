@@ -22,6 +22,7 @@ interface MarkdownWithHighlightsProps {
     tags: Tag[];
     onSelectQuote: (quote: CreateQuoteRequest2 & { tagId: string; color: string }) => void;
     selectedQuote: CreateQuoteRequest2 | null;
+    onCreateNewTag: () => void;
 }
 
 /**
@@ -88,6 +89,7 @@ export default function MarkdownWithHighlights({
     tags,
     onSelectQuote,
     selectedQuote,
+    onCreateNewTag,
 }: MarkdownWithHighlightsProps) {
     const containerRef = useRef<HTMLDivElement>(null);
     const wrapperRef = useRef<HTMLDivElement>(null);
@@ -350,6 +352,7 @@ export default function MarkdownWithHighlights({
                     yTop={selection.yTop}
                     tags={tags}
                     onSelectTag={handleSelectTag}
+                    onCreateNewTag={() => { onCreateNewTag(); setSelection(null); window.getSelection()?.removeAllRanges(); }}
                     onTriggerAI={handleTriggerAI}
                     onClose={() => setSelection(null)}
                 />

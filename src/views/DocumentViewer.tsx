@@ -9,6 +9,7 @@ import { projectApi } from '../API/projects';
 import RightSidebarLayout from '../layouts/RightSidebarLayout';
 import { useTabsStore } from '../stores/useTabsStore';
 import SecondaryDocumentReader from '../components/viewer/SecondaryDocumentReader';
+import { useLayout } from '../context/LayoutContext';
 
 export default function DocumentViewer() {
     const { projectId, documentId } = useParams<{ projectId: string; documentId: string }>();
@@ -31,6 +32,7 @@ export default function DocumentViewer() {
         queryFn: () => projectApi.getById(projectId!),
         enabled: !!projectId,
     });
+    const { openTagsDrawer } = useLayout();
 
     const { data: document, isLoading: isLoadingDoc, error } = useQuery({
         queryKey: ['document', documentId],
@@ -123,7 +125,8 @@ export default function DocumentViewer() {
                             tags={tags}
                             onSelectQuote={handleCreateQuote}
                             selectedQuote={null}
-                        />
+                            onCreateNewTag={() => openTagsDrawer(projectId!, document.title, true)}
+                    />
                     </div>
                 </div>
 
@@ -139,8 +142,6 @@ export default function DocumentViewer() {
 
             <RightSidebarLayout
                 context={document.markdownContent}
-                projectId={projectId!}
-                tags={tags}
             />
         </div>
     );

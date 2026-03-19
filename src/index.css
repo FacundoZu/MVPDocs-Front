@@ -148,11 +148,25 @@
 }
 
 @keyframes close-sidebar {
-    from {
-        transform: translateX(0%);
-    }
-
-    to {
-        transform: translateX(100%);
-    }
+    from { transform: translateX(0%); }
+    to   { transform: translateX(100%); }
 }
+
+/* Landing page — orbes de fondo */
+@keyframes orb-1 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33%       { transform: translate(40px, -60px) scale(1.08); }
+    66%       { transform: translate(-30px, 30px) scale(0.94); }
+}
+@keyframes orb-2 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    40%       { transform: translate(-50px, 40px) scale(1.1); }
+    70%       { transform: translate(35px, -25px) scale(0.92); }
+}
+@keyframes orb-3 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50%       { transform: translate(20px, 50px) scale(1.06); }
+}
+.landing-orb-1 { animation: orb-1 18s ease-in-out infinite; }
+.landing-orb-2 { animation: orb-2 24s ease-in-out infinite; }
+.landing-orb-3 { animation: orb-3 20s ease-in-out infinite; }

@@ -8,7 +8,12 @@ import type { ProjectWithDocs } from './ProjectItem';
 import NewProjectModal from './NewProjectModal';
 import { useNavigate } from 'react-router';
 
-export default function Sidebar() {
+interface SidebarProps {
+    onOpenTags: (projectId: string, projectName: string) => void;
+    tagsProjectId: string | null;
+}
+
+export default function Sidebar({ onOpenTags, tagsProjectId }: SidebarProps) {
     const { addProject } = useProject();
     const [showModal, setShowModal] = useState(false);
 
@@ -70,7 +75,12 @@ export default function Sidebar() {
                         </div>
                     ) : (
                         (projects as ProjectWithDocs[]).map((project) => (
-                            <ProjectItem key={project._id} project={project} />
+                            <ProjectItem
+                                key={project._id}
+                                project={project}
+                                onOpenTags={onOpenTags}
+                                tagsOpen={tagsProjectId === project._id}
+                            />
                         ))
                     )}
                 </div>
@@ -78,7 +88,7 @@ export default function Sidebar() {
                 <div className="px-4 py-3 border-t border-gray-100">
                     <button
                         onClick={() => setShowModal(true)}
-                        className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                        className="w-full flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:text-primary hover:bg-primary/10 rounded-lg transition-colors"
                     >
                         <FiPlus className="w-4 h-4" />
                         Nuevo proyecto

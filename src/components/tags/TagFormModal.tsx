@@ -1,6 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { ColorPicker } from './ColorPicker';
+import { ColorPicker, randomColor } from './ColorPicker';
 import type { Tag } from '../../types/tagTypes';
 import { IoClose } from 'react-icons/io5';
 import { createTag } from '../../API/TagAPI';
@@ -23,7 +23,7 @@ export const TagFormModal = ({ isOpen, onClose, existingTag, projectId }: TagFor
 
   const defaultValues = {
     name: existingTag?.name || '',
-    color: existingTag?.color || '#3B82F6',
+    color: existingTag?.color || randomColor(),
     description: existingTag?.description || '',
   }
 
@@ -85,19 +85,7 @@ export const TagFormModal = ({ isOpen, onClose, existingTag, projectId }: TagFor
             onChange={(color) => setValue('color', color)}
           />
 
-          <div className='flex flex-col gap-2 text-sm'>
-            <label htmlFor="description" className='text-gray-500'>Descripcion <span className='text-gray-400 text-xs'>(Opcional)</span></label>
-            <textarea
-              id="description"
-              cols={10}
-              rows={4}
-              placeholder='Ingresa una descripcion'
-              className='p-2 border border-gray-300 rounded-md bg-gray-100 text-sm'
-              {...register('description')}
-            ></textarea>
-          </div>
-
-          <button type='submit' className='bg-blue-500 text-white p-2 rounded-md text-sm cursor-pointer'>Crear</button>
+          <button type='submit' className='bg-primary text-white p-2 rounded-md text-sm cursor-pointer hover:bg-primary/90 transition-colors'>Crear</button>
         </form>
 
       </div>
