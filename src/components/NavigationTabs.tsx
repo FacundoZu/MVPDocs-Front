@@ -82,15 +82,19 @@ export default function NavigationTabs() {
             if (matchingTab) {
                 setActiveTab(matchingTab.id);
             } else {
-                // Nos comportamos como un IDE/navegador "nuevo espacio". 
-                // Al hacer clic a un documento o red, abrimos una NUEVA pestaña automáticamente
-                // para que no pierdan la vista de Proyecto. 
+                // El usuario quiere comportamiento clásico tipo navegador web:
+                // Al hacer clic en un enlace lateral, sobrescribimos la pestaña actual,
+                // sin crear una nueva a menos que opriman "+".
                 const type = getTabTypeFromPath(currentPath);
-                const newId = addTab({ path: currentPath, title: 'Cargando...', type });
-                setActiveTab(newId);
+                updateTab(activeTab.id, { 
+                    path: currentPath, 
+                    title: 'Cargando...', 
+                    type,
+                    secondaryDocumentId: undefined // Cerrar split view al forzar una nueva navegación global
+                });
             }
         }
-    }, [location.pathname, addTab, setActiveTab]);
+    }, [location.pathname, addTab, setActiveTab, updateTab]);
 
     // 2. Actualizar título cuando terminan de cargar las queries
     useEffect(() => {
