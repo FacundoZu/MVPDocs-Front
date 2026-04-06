@@ -49,7 +49,8 @@ export default function DocumentTable({
         });
     };
 
-    const getFileIcon = (type: string) => {
+    const getFileIcon = (type?: string) => {
+        if (!type) return <FaFileAlt className="w-5 h-5 text-gray-400" />;
         if (type.includes('pdf')) {
             return <FaFilePdf className="w-5 h-5 text-red-500" />;
         }

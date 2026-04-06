@@ -8,12 +8,21 @@ importers:
 
   .:
     dependencies:
+      '@lexical/list':
+        specifier: 0.40.0
+        version: 0.40.0
       '@lexical/markdown':
         specifier: 0.40.0
         version: 0.40.0
       '@lexical/react':
         specifier: 0.40.0
         version: 0.40.0(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(yjs@13.6.29)
+      '@lexical/rich-text':
+        specifier: 0.40.0
+        version: 0.40.0
+      '@lexical/selection':
+        specifier: 0.40.0
+        version: 0.40.0
       '@openrouter/ai-sdk-provider':
         specifier: ^2.2.3
         version: 2.2.3(ai@6.0.103(zod@4.3.6))(zod@4.3.6)

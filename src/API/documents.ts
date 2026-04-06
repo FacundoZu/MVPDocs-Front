@@ -7,6 +7,8 @@ export interface Document {
     originalFormat: string;
     markdownContent: string;
     contentHash: string;
+    documentType: 'source_material' | 'research_note';
+    lexicalState?: string;
     summary?: string;
     metadata: {
         wordCount: number;
@@ -54,6 +56,16 @@ export const documentApi = {
 
     updateSummary: async (id: string, summary: string): Promise<Document> => {
         const response = await api.patch<{ message: string; document: Document }>(`/documents/${id}/summary`, { summary });
+        return response.data.document;
+    },
+
+    createNote: async (projectId: string, title: string): Promise<Document> => {
+        const response = await api.post<Document>('/documents/notes', { projectId, title });
+        return response.data;
+    },
+
+    updateContent: async (id: string, data: { markdownContent?: string; lexicalState?: string }): Promise<Document> => {
+        const response = await api.patch<{ message: string; document: Document }>(`/documents/${id}/content`, data);
         return response.data.document;
     },
 };

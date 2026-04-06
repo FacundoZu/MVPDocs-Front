@@ -3,7 +3,8 @@ import api from '../lib/axios';
 export interface ProjectDocument {
     id: string;
     title: string;
-    originalFormat: string;
+    originalFormat?: string;
+    documentType: 'source_material' | 'research_note';
     createdAt: string;
 }
 
