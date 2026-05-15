@@ -3,7 +3,7 @@ import type { SuggestCategoriesParams, SuggestTagsParams } from "../types";
 import { streamText, generateText } from "ai"
 import type { ChatMessage } from "../types/chatTypes";
 
-const model = 'arcee-ai/trinity-large-preview:free'
+const model = 'openrouter/owl-alpha'
 
 interface StreamTextParams {
     content: string;
